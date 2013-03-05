@@ -143,7 +143,7 @@ And then uninstall:
     >>> print ls(os.path.join(sample_buildout, 'var/run/foo'))
     drwxr-x--- USER GROUP PREFIX/var/run/foo
 
-Here we see that the var and run directories are kept. The etc
+Here we see that the var and run directories are kept.  The etc
 directory is discarded because only buildout recipes should write to
 it and all of its data are expendible.
 
@@ -191,6 +191,7 @@ are removed:
     >>> os.path.exists('' + os.path.join(sample_buildout, 'PREFIX/var/run/foo'))
     False
 
+
 Deployment Name
 ===============
 
@@ -232,7 +233,6 @@ name can be specified explicitly:
         Creating 'PREFIX/etc/logrotate.d',
         mode 755, user 'USER', group 'GROUP'
 
-
     >>> print ls(os.path.join(sample_buildout, 'etc/bar'))
     drwxr-xr-x USER GROUP PREFIX/etc/bar
 
@@ -265,6 +265,7 @@ name can be specified explicitly:
 Note (here and earlier) that the options include the name option,
 which defaults to the part name.  Other parts that use the deployment
 name should use the name option rather than the part name.
+
 
 Configuration files
 ===================
@@ -490,6 +491,7 @@ The recipe sets a location option that can be used by other recipes:
     location = PREFIX/etc/foo/x.cfg
     ...
 
+
 Cron support
 ============
 
@@ -526,7 +528,6 @@ This example creates PREFIX/etc/cron.d/foo-cron
     '30 23 * * *\tUSER\techo hello world!\n'
 
 .. make sure cron recipe honors deployment name option:
-
 
     >>> write('buildout.cfg',
     ... '''
@@ -651,8 +652,8 @@ SharedConfig
 ============
 
 This recipe can be used to update configuration files that are shared by
-multiple applications. The absolute path of the file must be specified. Also,
-the configuration files must accept comments that start with "#".
+multiple applications.  The absolute path of the file must be specified.
+Also, the configuration files must accept comments that start with "#".
 
 Like the configuration recipe, the content to add in the configuration file can
 be provided using the "text" or the "file" option.
@@ -890,9 +891,10 @@ But the files are not deleted.
 Edgecases
 ---------
 
-The SharedConfig recipe checks to see if the current data in the file ends with
-a new line. If it doesn't exist it adds one. This is in addition to the blank
-line the recipe adds before the section to enhance readability.
+The SharedConfig recipe checks to see if the current data in the file
+ends with a new line.  If it doesn't exist it adds one.  This is in
+addition to the blank line the recipe adds before the section to enhance
+readability.
 
     >>> open('anotherconfig.cfg', 'w').write('one')
     >>> write('buildout.cfg',
