@@ -78,6 +78,7 @@ def test_suite():
                 # The order doesn't matter after this point
 
                 (re.compile('/.*/sample-buildout'), 'PREFIX'),
+                zc.buildout.testing.not_found,
                ]),
             ),
         ))
