@@ -1,0 +1,116 @@
+=================
+Path computations
+=================
+
+    >>> import pprint
+    >>> import zc.recipe.deployment
+
+    >>> def compute(options, name="myapp"):
+    ...     options = options.copy()
+    ...     zc.recipe.deployment.Install(object(), name, options)
+    ...     pprint.pprint(options, width=1)
+
+Deployment-specific directories are created based on the name of the part:
+
+    >>> compute({})
+    {'crontab-directory': '/etc/cron.d',
+     'etc-directory': '/etc/myapp',
+     'log-directory': '/var/log/myapp',
+     'logrotate-directory': '/etc/logrotate.d',
+     'name': 'myapp',
+     'prefix': '/',
+     'rc-directory': '/etc/init.d',
+     'run-directory': '/var/run/myapp'}
+
+The ``name`` setting overrides the part name if present and non-empty:
+
+    >>> compute({"name": ""})
+    {'crontab-directory': '/etc/cron.d',
+     'etc-directory': '/etc/myapp',
+     'log-directory': '/var/log/myapp',
+     'logrotate-directory': '/etc/logrotate.d',
+     'name': 'myapp',
+     'prefix': '/',
+     'rc-directory': '/etc/init.d',
+     'run-directory': '/var/run/myapp'}
+
+    >>> compute({"name": "yourapp"})
+    {'crontab-directory': '/etc/cron.d',
+     'etc-directory': '/etc/yourapp',
+     'log-directory': '/var/log/yourapp',
+     'logrotate-directory': '/etc/logrotate.d',
+     'name': 'yourapp',
+     'prefix': '/',
+     'rc-directory': '/etc/init.d',
+     'run-directory': '/var/run/yourapp'}
+
+Setting ``prefix`` causes computed directories to be located under the
+specified hierarchy:
+
+    >>> compute({"prefix": "/usr/local"})
+    {'crontab-directory': '/usr/local/etc/cron.d',
+     'etc-directory': '/usr/local/etc/myapp',
+     'log-directory': '/usr/local/var/log/myapp',
+     'logrotate-directory': '/usr/local/etc/logrotate.d',
+     'name': 'myapp',
+     'prefix': '/usr/local',
+     'rc-directory': '/usr/local/etc/init.d',
+     'run-directory': '/usr/local/var/run/myapp'}
+
+The ``etc``, ``log`` and ``run`` settings cause the "roots" of the
+corresponding directories to be placed in the specified locations; the
+deployment-specific directory is still used:
+
+    >>> compute({"etc": "/antsy",
+    ...          "log": "/log/someplace",
+    ...          "prefix": "/usr/local",
+    ...          "run": "/run/someplace"})
+    {'crontab-directory': '/antsy/cron.d',
+     'etc': '/antsy',
+     'etc-directory': '/antsy/myapp',
+     'log': '/log/someplace',
+     'log-directory': '/log/someplace/myapp',
+     'logrotate-directory': '/antsy/logrotate.d',
+     'name': 'myapp',
+     'prefix': '/usr/local',
+     'rc-directory': '/antsy/init.d',
+     'run': '/run/someplace',
+     'run-directory': '/run/someplace/myapp'}
+
+If the ``etc`` and ``log`` settings are relative, the ``prefix`` setting
+also applies:
+
+    >>> compute({"etc": "antsy",
+    ...          "log": "var/someplace",
+    ...          "prefix": "/usr/local"})
+    {'crontab-directory': '/usr/local/antsy/cron.d',
+     'etc': 'antsy',
+     'etc-directory': '/usr/local/antsy/myapp',
+     'log': 'var/someplace',
+     'log-directory': '/usr/local/var/someplace/myapp',
+     'logrotate-directory': '/usr/local/antsy/logrotate.d',
+     'name': 'myapp',
+     'prefix': '/usr/local',
+     'rc-directory': '/usr/local/antsy/init.d',
+     'run-directory': '/usr/local/var/run/myapp'}
+
+The ``crontab-directory``, ``logrotate-directory`` and ``rc-directory``
+settings can be specified directly, and override thei computations
+entirely:
+
+    >>> compute({"crontab-directory": "/my-crontabs",
+    ...          "etc": "antsy",
+    ...          "log": "var/someplace",
+    ...          "logrotate-directory": "/my-logrotations",
+    ...          "prefix": "/usr/local",
+    ...          "rc-directory": "/my-rcs"})
+    {'crontab-directory': '/my-crontabs',
+     'etc': 'antsy',
+     'etc-directory': '/usr/local/antsy/myapp',
+     'log': 'var/someplace',
+     'log-directory': '/usr/local/var/someplace/myapp',
+     'logrotate-directory': '/my-logrotations',
+     'name': 'myapp',
+     'prefix': '/usr/local',
+     'rc-directory': '/my-rcs',
+     'run-directory': '/usr/local/var/run/myapp'}

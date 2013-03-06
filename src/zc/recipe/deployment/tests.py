@@ -59,7 +59,7 @@ def setUp(test):
 
 def test_suite():
     return unittest.TestSuite((
-        #doctest.DocTestSuite(),
+        doctest.DocFileSuite('paths.txt'),
         doctest.DocFileSuite(
             'README.txt',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
