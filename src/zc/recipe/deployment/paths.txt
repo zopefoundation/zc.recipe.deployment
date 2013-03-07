@@ -22,34 +22,40 @@ Deployment-specific directories are created based on the name of the part:
     >>> compute({})
     {'crontab-directory': '/etc/cron.d',
      'etc-directory': '/etc/myapp',
+     'etc-prefix': '/etc',
      'log-directory': '/var/log/myapp',
      'logrotate-directory': '/etc/logrotate.d',
      'name': 'myapp',
      'prefix': '/',
      'rc-directory': '/etc/init.d',
-     'run-directory': '/var/run/myapp'}
+     'run-directory': '/var/run/myapp',
+     'var-prefix': '/var'}
 
 The ``name`` setting overrides the part name if present and non-empty:
 
     >>> compute({"name": ""})
     {'crontab-directory': '/etc/cron.d',
      'etc-directory': '/etc/myapp',
+     'etc-prefix': '/etc',
      'log-directory': '/var/log/myapp',
      'logrotate-directory': '/etc/logrotate.d',
      'name': 'myapp',
      'prefix': '/',
      'rc-directory': '/etc/init.d',
-     'run-directory': '/var/run/myapp'}
+     'run-directory': '/var/run/myapp',
+     'var-prefix': '/var'}
 
     >>> compute({"name": "yourapp"})
     {'crontab-directory': '/etc/cron.d',
      'etc-directory': '/etc/yourapp',
+     'etc-prefix': '/etc',
      'log-directory': '/var/log/yourapp',
      'logrotate-directory': '/etc/logrotate.d',
      'name': 'yourapp',
      'prefix': '/',
      'rc-directory': '/etc/init.d',
-     'run-directory': '/var/run/yourapp'}
+     'run-directory': '/var/run/yourapp',
+     'var-prefix': '/var'}
 
 Setting ``prefix`` causes computed directories to be located under the
 specified hierarchy:
@@ -57,12 +63,14 @@ specified hierarchy:
     >>> compute({"prefix": "/usr/local"})
     {'crontab-directory': '/usr/local/etc/cron.d',
      'etc-directory': '/usr/local/etc/myapp',
+     'etc-prefix': '/usr/local/etc',
      'log-directory': '/usr/local/var/log/myapp',
      'logrotate-directory': '/usr/local/etc/logrotate.d',
      'name': 'myapp',
      'prefix': '/usr/local',
      'rc-directory': '/usr/local/etc/init.d',
-     'run-directory': '/usr/local/var/run/myapp'}
+     'run-directory': '/usr/local/var/run/myapp',
+     'var-prefix': '/usr/local/var'}
 
 The ``etc``, ``log`` and ``run`` settings cause the "roots" of the
 corresponding directories to be placed in the specified locations; the
@@ -75,6 +83,7 @@ deployment-specific directory is still used:
     {'crontab-directory': '/antsy/cron.d',
      'etc': '/antsy',
      'etc-directory': '/antsy/myapp',
+     'etc-prefix': '/antsy',
      'log': '/log/someplace',
      'log-directory': '/log/someplace/myapp',
      'logrotate-directory': '/antsy/logrotate.d',
@@ -82,7 +91,8 @@ deployment-specific directory is still used:
      'prefix': '/usr/local',
      'rc-directory': '/antsy/init.d',
      'run': '/run/someplace',
-     'run-directory': '/run/someplace/myapp'}
+     'run-directory': '/run/someplace/myapp',
+     'var-prefix': '/usr/local/var'}
 
 If the ``etc`` and ``log`` settings are relative, the ``prefix`` setting
 also applies:
@@ -93,13 +103,15 @@ also applies:
     {'crontab-directory': '/usr/local/antsy/cron.d',
      'etc': 'antsy',
      'etc-directory': '/usr/local/antsy/myapp',
+     'etc-prefix': '/usr/local/antsy',
      'log': 'var/someplace',
      'log-directory': '/usr/local/var/someplace/myapp',
      'logrotate-directory': '/usr/local/antsy/logrotate.d',
      'name': 'myapp',
      'prefix': '/usr/local',
      'rc-directory': '/usr/local/antsy/init.d',
-     'run-directory': '/usr/local/var/run/myapp'}
+     'run-directory': '/usr/local/var/run/myapp',
+     'var-prefix': '/usr/local/var'}
 
 Output options ending in '-directory' can be specified directly; these
 values will be retained instead of being clobbered by computed values:
@@ -116,13 +128,15 @@ values will be retained instead of being clobbered by computed values:
     {'crontab-directory': '/my-crontabs',
      'etc': 'antsy',
      'etc-directory': '/apps/config',
+     'etc-prefix': '/usr/local/antsy',
      'log': 'var/someplace',
      'log-directory': '/big-disk/full-of-logs',
      'logrotate-directory': '/my-logrotations',
      'name': 'myapp',
      'prefix': '/usr/local',
      'rc-directory': '/my-rcs',
-     'run-directory': '/variable/run-away'}
+     'run-directory': '/variable/run-away',
+     'var-prefix': '/usr/local/var'}
 
 
 Paths are absolute
@@ -134,12 +148,14 @@ Output paths (option names ending in '-directory') are absolute, even if
     >>> compute({"prefix": "my/prefix"})
     {'crontab-directory': '/my/prefix/etc/cron.d',
      'etc-directory': '/my/prefix/etc/myapp',
+     'etc-prefix': '/my/prefix/etc',
      'log-directory': '/my/prefix/var/log/myapp',
      'logrotate-directory': '/my/prefix/etc/logrotate.d',
      'name': 'myapp',
      'prefix': '/my/prefix',
      'rc-directory': '/my/prefix/etc/init.d',
-     'run-directory': '/my/prefix/var/run/myapp'}
+     'run-directory': '/my/prefix/var/run/myapp',
+     'var-prefix': '/my/prefix/var'}
 
     >>> compute({"crontab-directory": "my-crontabs",
     ...          "etc": "antsy",
@@ -150,13 +166,15 @@ Output paths (option names ending in '-directory') are absolute, even if
     {'crontab-directory': '/my/prefix/my-crontabs',
      'etc': 'antsy',
      'etc-directory': '/my/prefix/antsy/myapp',
+     'etc-prefix': '/my/prefix/antsy',
      'log': 'var/someplace',
      'log-directory': '/my/prefix/var/someplace/myapp',
      'logrotate-directory': '/my/prefix/my-logrotations',
      'name': 'myapp',
      'prefix': '/my/prefix',
      'rc-directory': '/my/prefix/my-rcs',
-     'run-directory': '/my/prefix/var/run/myapp'}
+     'run-directory': '/my/prefix/var/run/myapp',
+     'var-prefix': '/my/prefix/var'}
 
 
 Specifying sub-tree prefixes
@@ -175,11 +193,13 @@ tree.  These can be located in the directory hierarchy using the
      'name': 'myapp',
      'prefix': '/',
      'rc-directory': '/config/init.d',
-     'run-directory': '/var/run/myapp'}
+     'run-directory': '/var/run/myapp',
+     'var-prefix': '/var'}
 
     >>> compute({"var-prefix": "/giant-disk"})
     {'crontab-directory': '/etc/cron.d',
      'etc-directory': '/etc/myapp',
+     'etc-prefix': '/etc',
      'log-directory': '/giant-disk/log/myapp',
      'logrotate-directory': '/etc/logrotate.d',
      'name': 'myapp',
@@ -194,25 +214,27 @@ These will be combined with the prefix if they are relative:
     ...          "prefix": "/alt"})
     {'crontab-directory': '/alt/config/cron.d',
      'etc-directory': '/alt/config/myapp',
-     'etc-prefix': 'config',
+     'etc-prefix': '/alt/config',
      'log-directory': '/alt/var/log/myapp',
      'logrotate-directory': '/alt/config/logrotate.d',
      'name': 'myapp',
      'prefix': '/alt',
      'rc-directory': '/alt/config/init.d',
-     'run-directory': '/alt/var/run/myapp'}
+     'run-directory': '/alt/var/run/myapp',
+     'var-prefix': '/alt/var'}
 
     >>> compute({"var-prefix": "giant-disk",
     ...          "prefix": "/alt"})
     {'crontab-directory': '/alt/etc/cron.d',
      'etc-directory': '/alt/etc/myapp',
+     'etc-prefix': '/alt/etc',
      'log-directory': '/alt/giant-disk/log/myapp',
      'logrotate-directory': '/alt/etc/logrotate.d',
      'name': 'myapp',
      'prefix': '/alt',
      'rc-directory': '/alt/etc/init.d',
      'run-directory': '/alt/giant-disk/run/myapp',
-     'var-prefix': 'giant-disk'}
+     'var-prefix': '/alt/giant-disk'}
 
 If ``etc-prefix`` and the (legacy) ``etc`` setting are both provided,
 ``etc-prefix`` wins:
@@ -228,7 +250,8 @@ If ``etc-prefix`` and the (legacy) ``etc`` setting are both provided,
      'name': 'myapp',
      'prefix': '/',
      'rc-directory': '/config/init.d',
-     'run-directory': '/var/run/myapp'}
+     'run-directory': '/var/run/myapp',
+     'var-prefix': '/var'}
 
 If ``var-prefix`` is used in conjunction with the (legacy) ``log`` and
 ``run`` settings, ``var-prefix`` wins:
@@ -238,6 +261,7 @@ If ``var-prefix`` is used in conjunction with the (legacy) ``log`` and
     ...          "var-prefix": "/big-disk"})
     {'crontab-directory': '/etc/cron.d',
      'etc-directory': '/etc/myapp',
+     'etc-prefix': '/etc',
      'log': '/log/someplace',
      'log-directory': '/big-disk/log/myapp',
      'logrotate-directory': '/etc/logrotate.d',

@@ -1,15 +1,16 @@
 Changes
 *******
 
-0.9.1 (unreleased)
-==================
+0.10.0 (unreleased)
+===================
 
 - Absolutize paths generated based on ``prefix`` if ``prefix`` is
   relative.
 
 - Add ``etc-prefix`` and ``var-prefix`` to specify new locations of
   these entire trees; used instead of the previously untested ``etc``,
-  ``log`` and ``run`` settings.
+  ``log`` and ``run`` settings.  Final (absolute) versions of these
+  paths are always exported in the output.
 
 - Consistently refuse to clobber the *-directory outputs; join with
   prefix if relative.

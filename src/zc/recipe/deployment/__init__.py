@@ -58,6 +58,9 @@ class Install:
                 path = os.path.join(prefix, base, *tail)
             options[key] = path
 
+        options['etc-prefix'] = etc
+        options['var-prefix'] = var
+
         directory('crontab', etc, 'cron.d')
         directory('etc', etc, name)
         directory('logrotate', etc, 'logrotate.d')
