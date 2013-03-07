@@ -35,29 +35,36 @@ class Install:
             options['name'] = name
 
         name = options['name']
-
-        prefix = os.path.join('/', options.get('prefix', '/'))
+        prefix = os.path.join('/', options.get('prefix') or '/')
         options['prefix'] = prefix
-        options['run-directory'] = os.path.join(
-            prefix, options.get('run', 'var/run'), name)
-        options['log-directory'] = os.path.join(
-            prefix, options.get('log', 'var/log'), name)
-        options['etc-directory'] = os.path.join(
-            prefix, options.get('etc', 'etc'), name)
-        etc = os.path.join(prefix, options.get('etc', 'etc'))
 
-        def directory(key, base, tail):
+        etc = os.path.join(
+            prefix, options.get('etc-prefix') or options.get('etc') or 'etc')
+
+        var = os.path.join(prefix, options.get('var-prefix') or 'var')
+        if options.get('var-prefix'):
+            log = os.path.join(var, "log")
+            run = os.path.join(var, "run")
+        else:
+            log = options.get('log') or 'var/log'
+            run = options.get('run') or 'var/run'
+
+        def directory(key, base, *tail):
             key += '-directory'
             setting = options.get(key)
             if setting:
                 path = os.path.join(prefix, setting)
             else:
-                path = os.path.join(prefix, base, tail)
+                path = os.path.join(prefix, base, *tail)
             options[key] = path
 
-        directory("crontab", etc, "cron.d")
-        directory("logrotate", etc, "logrotate.d")
-        directory("rc", etc, "init.d")
+        directory('crontab', etc, 'cron.d')
+        directory('etc', etc, name)
+        directory('logrotate', etc, 'logrotate.d')
+        directory('rc', etc, 'init.d')
+
+        directory('log', log, name)
+        directory('run', run, name)
 
     def install(self):
         options = self.options

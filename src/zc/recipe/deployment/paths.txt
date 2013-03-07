@@ -2,6 +2,13 @@
 Path computations
 =================
 
+.. warning::
+
+   This document describes the behavior of the previously untested
+   settings ``etc``, ``log``, and ``run``.  This is done to ensure we
+   don't break existing uses that do not use the newer ``etc-prefix``
+   and ``var-prefix`` settings, but the later are recommended.
+
     >>> import pprint
     >>> import zc.recipe.deployment
 
@@ -94,26 +101,28 @@ also applies:
      'rc-directory': '/usr/local/antsy/init.d',
      'run-directory': '/usr/local/var/run/myapp'}
 
-The ``crontab-directory``, ``logrotate-directory`` and ``rc-directory``
-settings can be specified directly, and override thei computations
-entirely:
+Output options ending in '-directory' can be specified directly; these
+values will be retained instead of being clobbered by computed values:
 
     >>> compute({"crontab-directory": "/my-crontabs",
     ...          "etc": "antsy",
+    ...          "etc-directory": "/apps/config",
     ...          "log": "var/someplace",
+    ...          "log-directory": "/big-disk/full-of-logs",
     ...          "logrotate-directory": "/my-logrotations",
     ...          "prefix": "/usr/local",
-    ...          "rc-directory": "/my-rcs"})
+    ...          "rc-directory": "/my-rcs",
+    ...          "run-directory": "/variable/run-away"})
     {'crontab-directory': '/my-crontabs',
      'etc': 'antsy',
-     'etc-directory': '/usr/local/antsy/myapp',
+     'etc-directory': '/apps/config',
      'log': 'var/someplace',
-     'log-directory': '/usr/local/var/someplace/myapp',
+     'log-directory': '/big-disk/full-of-logs',
      'logrotate-directory': '/my-logrotations',
      'name': 'myapp',
      'prefix': '/usr/local',
      'rc-directory': '/my-rcs',
-     'run-directory': '/usr/local/var/run/myapp'}
+     'run-directory': '/variable/run-away'}
 
 
 Paths are absolute
@@ -148,3 +157,93 @@ Output paths (option names ending in '-directory') are absolute, even if
      'prefix': '/my/prefix',
      'rc-directory': '/my/prefix/my-rcs',
      'run-directory': '/my/prefix/var/run/myapp'}
+
+
+Specifying sub-tree prefixes
+----------------------------
+
+Two distinct sub-trees are supported: the 'etc' tree and the 'var'
+tree.  These can be located in the directory hierarchy using the
+``etc-prefix`` and ``var-prefix`` settings.
+
+    >>> compute({"etc-prefix": "/config"})
+    {'crontab-directory': '/config/cron.d',
+     'etc-directory': '/config/myapp',
+     'etc-prefix': '/config',
+     'log-directory': '/var/log/myapp',
+     'logrotate-directory': '/config/logrotate.d',
+     'name': 'myapp',
+     'prefix': '/',
+     'rc-directory': '/config/init.d',
+     'run-directory': '/var/run/myapp'}
+
+    >>> compute({"var-prefix": "/giant-disk"})
+    {'crontab-directory': '/etc/cron.d',
+     'etc-directory': '/etc/myapp',
+     'log-directory': '/giant-disk/log/myapp',
+     'logrotate-directory': '/etc/logrotate.d',
+     'name': 'myapp',
+     'prefix': '/',
+     'rc-directory': '/etc/init.d',
+     'run-directory': '/giant-disk/run/myapp',
+     'var-prefix': '/giant-disk'}
+
+These will be combined with the prefix if they are relative:
+
+    >>> compute({"etc-prefix": "config",
+    ...          "prefix": "/alt"})
+    {'crontab-directory': '/alt/config/cron.d',
+     'etc-directory': '/alt/config/myapp',
+     'etc-prefix': 'config',
+     'log-directory': '/alt/var/log/myapp',
+     'logrotate-directory': '/alt/config/logrotate.d',
+     'name': 'myapp',
+     'prefix': '/alt',
+     'rc-directory': '/alt/config/init.d',
+     'run-directory': '/alt/var/run/myapp'}
+
+    >>> compute({"var-prefix": "giant-disk",
+    ...          "prefix": "/alt"})
+    {'crontab-directory': '/alt/etc/cron.d',
+     'etc-directory': '/alt/etc/myapp',
+     'log-directory': '/alt/giant-disk/log/myapp',
+     'logrotate-directory': '/alt/etc/logrotate.d',
+     'name': 'myapp',
+     'prefix': '/alt',
+     'rc-directory': '/alt/etc/init.d',
+     'run-directory': '/alt/giant-disk/run/myapp',
+     'var-prefix': 'giant-disk'}
+
+If ``etc-prefix`` and the (legacy) ``etc`` setting are both provided,
+``etc-prefix`` wins:
+
+    >>> compute({"etc": "/old",
+    ...          "etc-prefix": "/config"})
+    {'crontab-directory': '/config/cron.d',
+     'etc': '/old',
+     'etc-directory': '/config/myapp',
+     'etc-prefix': '/config',
+     'log-directory': '/var/log/myapp',
+     'logrotate-directory': '/config/logrotate.d',
+     'name': 'myapp',
+     'prefix': '/',
+     'rc-directory': '/config/init.d',
+     'run-directory': '/var/run/myapp'}
+
+If ``var-prefix`` is used in conjunction with the (legacy) ``log`` and
+``run`` settings, ``var-prefix`` wins:
+
+    >>> compute({"log": "/log/someplace",
+    ...          "run": "/run/someplace",
+    ...          "var-prefix": "/big-disk"})
+    {'crontab-directory': '/etc/cron.d',
+     'etc-directory': '/etc/myapp',
+     'log': '/log/someplace',
+     'log-directory': '/big-disk/log/myapp',
+     'logrotate-directory': '/etc/logrotate.d',
+     'name': 'myapp',
+     'prefix': '/',
+     'rc-directory': '/etc/init.d',
+     'run': '/run/someplace',
+     'run-directory': '/big-disk/run/myapp',
+     'var-prefix': '/big-disk'}
