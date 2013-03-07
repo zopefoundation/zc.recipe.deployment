@@ -114,3 +114,37 @@ entirely:
      'prefix': '/usr/local',
      'rc-directory': '/my-rcs',
      'run-directory': '/usr/local/var/run/myapp'}
+
+
+Paths are absolute
+------------------
+
+Output paths (option names ending in '-directory') are absolute, even if
+``prefix`` is relative:
+
+    >>> compute({"prefix": "my/prefix"})
+    {'crontab-directory': '/my/prefix/etc/cron.d',
+     'etc-directory': '/my/prefix/etc/myapp',
+     'log-directory': '/my/prefix/var/log/myapp',
+     'logrotate-directory': '/my/prefix/etc/logrotate.d',
+     'name': 'myapp',
+     'prefix': '/my/prefix',
+     'rc-directory': '/my/prefix/etc/init.d',
+     'run-directory': '/my/prefix/var/run/myapp'}
+
+    >>> compute({"crontab-directory": "my-crontabs",
+    ...          "etc": "antsy",
+    ...          "log": "var/someplace",
+    ...          "logrotate-directory": "my-logrotations",
+    ...          "prefix": "my/prefix",
+    ...          "rc-directory": "my-rcs"})
+    {'crontab-directory': '/my/prefix/my-crontabs',
+     'etc': 'antsy',
+     'etc-directory': '/my/prefix/antsy/myapp',
+     'log': 'var/someplace',
+     'log-directory': '/my/prefix/var/someplace/myapp',
+     'logrotate-directory': '/my/prefix/my-logrotations',
+     'name': 'myapp',
+     'prefix': '/my/prefix',
+     'rc-directory': '/my/prefix/my-rcs',
+     'run-directory': '/my/prefix/var/run/myapp'}
