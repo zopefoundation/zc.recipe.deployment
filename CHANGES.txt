@@ -12,6 +12,9 @@ Changes
   ``log`` and ``run`` settings.  Final (absolute) versions of these
   paths are always exported in the output.
 
+- Add ``cache-directory`` and ``lib-directory`` to the set of output
+  directories.
+
 - Consistently refuse to clobber the *-directory outputs; join with
   prefix if relative.
 

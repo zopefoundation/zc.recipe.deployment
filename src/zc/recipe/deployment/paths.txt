@@ -20,9 +20,11 @@ Path computations
 Deployment-specific directories are created based on the name of the part:
 
     >>> compute({})
-    {'crontab-directory': '/etc/cron.d',
+    {'cache-directory': '/var/cache/myapp',
+     'crontab-directory': '/etc/cron.d',
      'etc-directory': '/etc/myapp',
      'etc-prefix': '/etc',
+     'lib-directory': '/var/lib/myapp',
      'log-directory': '/var/log/myapp',
      'logrotate-directory': '/etc/logrotate.d',
      'name': 'myapp',
@@ -34,9 +36,11 @@ Deployment-specific directories are created based on the name of the part:
 The ``name`` setting overrides the part name if present and non-empty:
 
     >>> compute({"name": ""})
-    {'crontab-directory': '/etc/cron.d',
+    {'cache-directory': '/var/cache/myapp',
+     'crontab-directory': '/etc/cron.d',
      'etc-directory': '/etc/myapp',
      'etc-prefix': '/etc',
+     'lib-directory': '/var/lib/myapp',
      'log-directory': '/var/log/myapp',
      'logrotate-directory': '/etc/logrotate.d',
      'name': 'myapp',
@@ -46,9 +50,11 @@ The ``name`` setting overrides the part name if present and non-empty:
      'var-prefix': '/var'}
 
     >>> compute({"name": "yourapp"})
-    {'crontab-directory': '/etc/cron.d',
+    {'cache-directory': '/var/cache/yourapp',
+     'crontab-directory': '/etc/cron.d',
      'etc-directory': '/etc/yourapp',
      'etc-prefix': '/etc',
+     'lib-directory': '/var/lib/yourapp',
      'log-directory': '/var/log/yourapp',
      'logrotate-directory': '/etc/logrotate.d',
      'name': 'yourapp',
@@ -61,9 +67,11 @@ Setting ``prefix`` causes computed directories to be located under the
 specified hierarchy:
 
     >>> compute({"prefix": "/usr/local"})
-    {'crontab-directory': '/usr/local/etc/cron.d',
+    {'cache-directory': '/usr/local/var/cache/myapp',
+     'crontab-directory': '/usr/local/etc/cron.d',
      'etc-directory': '/usr/local/etc/myapp',
      'etc-prefix': '/usr/local/etc',
+     'lib-directory': '/usr/local/var/lib/myapp',
      'log-directory': '/usr/local/var/log/myapp',
      'logrotate-directory': '/usr/local/etc/logrotate.d',
      'name': 'myapp',
@@ -80,10 +88,12 @@ deployment-specific directory is still used:
     ...          "log": "/log/someplace",
     ...          "prefix": "/usr/local",
     ...          "run": "/run/someplace"})
-    {'crontab-directory': '/antsy/cron.d',
+    {'cache-directory': '/usr/local/var/cache/myapp',
+     'crontab-directory': '/antsy/cron.d',
      'etc': '/antsy',
      'etc-directory': '/antsy/myapp',
      'etc-prefix': '/antsy',
+     'lib-directory': '/usr/local/var/lib/myapp',
      'log': '/log/someplace',
      'log-directory': '/log/someplace/myapp',
      'logrotate-directory': '/antsy/logrotate.d',
@@ -100,10 +110,12 @@ also applies:
     >>> compute({"etc": "antsy",
     ...          "log": "var/someplace",
     ...          "prefix": "/usr/local"})
-    {'crontab-directory': '/usr/local/antsy/cron.d',
+    {'cache-directory': '/usr/local/var/cache/myapp',
+     'crontab-directory': '/usr/local/antsy/cron.d',
      'etc': 'antsy',
      'etc-directory': '/usr/local/antsy/myapp',
      'etc-prefix': '/usr/local/antsy',
+     'lib-directory': '/usr/local/var/lib/myapp',
      'log': 'var/someplace',
      'log-directory': '/usr/local/var/someplace/myapp',
      'logrotate-directory': '/usr/local/antsy/logrotate.d',
@@ -116,19 +128,23 @@ also applies:
 Output options ending in '-directory' can be specified directly; these
 values will be retained instead of being clobbered by computed values:
 
-    >>> compute({"crontab-directory": "/my-crontabs",
+    >>> compute({"cache-directory": "/cache-data",
+    ...          "crontab-directory": "/my-crontabs",
     ...          "etc": "antsy",
     ...          "etc-directory": "/apps/config",
+    ...          "lib-directory": "/big-disk/blobs",
     ...          "log": "var/someplace",
     ...          "log-directory": "/big-disk/full-of-logs",
     ...          "logrotate-directory": "/my-logrotations",
     ...          "prefix": "/usr/local",
     ...          "rc-directory": "/my-rcs",
     ...          "run-directory": "/variable/run-away"})
-    {'crontab-directory': '/my-crontabs',
+    {'cache-directory': '/cache-data',
+     'crontab-directory': '/my-crontabs',
      'etc': 'antsy',
      'etc-directory': '/apps/config',
      'etc-prefix': '/usr/local/antsy',
+     'lib-directory': '/big-disk/blobs',
      'log': 'var/someplace',
      'log-directory': '/big-disk/full-of-logs',
      'logrotate-directory': '/my-logrotations',
@@ -146,9 +162,11 @@ Output paths (option names ending in '-directory') are absolute, even if
 ``prefix`` is relative:
 
     >>> compute({"prefix": "my/prefix"})
-    {'crontab-directory': '/my/prefix/etc/cron.d',
+    {'cache-directory': '/my/prefix/var/cache/myapp',
+     'crontab-directory': '/my/prefix/etc/cron.d',
      'etc-directory': '/my/prefix/etc/myapp',
      'etc-prefix': '/my/prefix/etc',
+     'lib-directory': '/my/prefix/var/lib/myapp',
      'log-directory': '/my/prefix/var/log/myapp',
      'logrotate-directory': '/my/prefix/etc/logrotate.d',
      'name': 'myapp',
@@ -163,10 +181,12 @@ Output paths (option names ending in '-directory') are absolute, even if
     ...          "logrotate-directory": "my-logrotations",
     ...          "prefix": "my/prefix",
     ...          "rc-directory": "my-rcs"})
-    {'crontab-directory': '/my/prefix/my-crontabs',
+    {'cache-directory': '/my/prefix/var/cache/myapp',
+     'crontab-directory': '/my/prefix/my-crontabs',
      'etc': 'antsy',
      'etc-directory': '/my/prefix/antsy/myapp',
      'etc-prefix': '/my/prefix/antsy',
+     'lib-directory': '/my/prefix/var/lib/myapp',
      'log': 'var/someplace',
      'log-directory': '/my/prefix/var/someplace/myapp',
      'logrotate-directory': '/my/prefix/my-logrotations',
@@ -185,9 +205,11 @@ tree.  These can be located in the directory hierarchy using the
 ``etc-prefix`` and ``var-prefix`` settings.
 
     >>> compute({"etc-prefix": "/config"})
-    {'crontab-directory': '/config/cron.d',
+    {'cache-directory': '/var/cache/myapp',
+     'crontab-directory': '/config/cron.d',
      'etc-directory': '/config/myapp',
      'etc-prefix': '/config',
+     'lib-directory': '/var/lib/myapp',
      'log-directory': '/var/log/myapp',
      'logrotate-directory': '/config/logrotate.d',
      'name': 'myapp',
@@ -197,9 +219,11 @@ tree.  These can be located in the directory hierarchy using the
      'var-prefix': '/var'}
 
     >>> compute({"var-prefix": "/giant-disk"})
-    {'crontab-directory': '/etc/cron.d',
+    {'cache-directory': '/giant-disk/cache/myapp',
+     'crontab-directory': '/etc/cron.d',
      'etc-directory': '/etc/myapp',
      'etc-prefix': '/etc',
+     'lib-directory': '/giant-disk/lib/myapp',
      'log-directory': '/giant-disk/log/myapp',
      'logrotate-directory': '/etc/logrotate.d',
      'name': 'myapp',
@@ -212,9 +236,11 @@ These will be combined with the prefix if they are relative:
 
     >>> compute({"etc-prefix": "config",
     ...          "prefix": "/alt"})
-    {'crontab-directory': '/alt/config/cron.d',
+    {'cache-directory': '/alt/var/cache/myapp',
+     'crontab-directory': '/alt/config/cron.d',
      'etc-directory': '/alt/config/myapp',
      'etc-prefix': '/alt/config',
+     'lib-directory': '/alt/var/lib/myapp',
      'log-directory': '/alt/var/log/myapp',
      'logrotate-directory': '/alt/config/logrotate.d',
      'name': 'myapp',
@@ -225,9 +251,11 @@ These will be combined with the prefix if they are relative:
 
     >>> compute({"var-prefix": "giant-disk",
     ...          "prefix": "/alt"})
-    {'crontab-directory': '/alt/etc/cron.d',
+    {'cache-directory': '/alt/giant-disk/cache/myapp',
+     'crontab-directory': '/alt/etc/cron.d',
      'etc-directory': '/alt/etc/myapp',
      'etc-prefix': '/alt/etc',
+     'lib-directory': '/alt/giant-disk/lib/myapp',
      'log-directory': '/alt/giant-disk/log/myapp',
      'logrotate-directory': '/alt/etc/logrotate.d',
      'name': 'myapp',
@@ -241,10 +269,12 @@ If ``etc-prefix`` and the (legacy) ``etc`` setting are both provided,
 
     >>> compute({"etc": "/old",
     ...          "etc-prefix": "/config"})
-    {'crontab-directory': '/config/cron.d',
+    {'cache-directory': '/var/cache/myapp',
+     'crontab-directory': '/config/cron.d',
      'etc': '/old',
      'etc-directory': '/config/myapp',
      'etc-prefix': '/config',
+     'lib-directory': '/var/lib/myapp',
      'log-directory': '/var/log/myapp',
      'logrotate-directory': '/config/logrotate.d',
      'name': 'myapp',
@@ -259,9 +289,11 @@ If ``var-prefix`` is used in conjunction with the (legacy) ``log`` and
     >>> compute({"log": "/log/someplace",
     ...          "run": "/run/someplace",
     ...          "var-prefix": "/big-disk"})
-    {'crontab-directory': '/etc/cron.d',
+    {'cache-directory': '/big-disk/cache/myapp',
+     'crontab-directory': '/etc/cron.d',
      'etc-directory': '/etc/myapp',
      'etc-prefix': '/etc',
+     'lib-directory': '/big-disk/lib/myapp',
      'log': '/log/someplace',
      'log-directory': '/big-disk/log/myapp',
      'logrotate-directory': '/etc/logrotate.d',

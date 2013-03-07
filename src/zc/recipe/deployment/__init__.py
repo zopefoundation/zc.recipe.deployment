@@ -61,11 +61,15 @@ class Install:
         options['etc-prefix'] = etc
         options['var-prefix'] = var
 
+        # /etc hierarchy
         directory('crontab', etc, 'cron.d')
         directory('etc', etc, name)
         directory('logrotate', etc, 'logrotate.d')
         directory('rc', etc, 'init.d')
 
+        # /var hierarchy
+        directory('cache', var, 'cache', name)
+        directory('lib', var, 'lib', name)
         directory('log', log, name)
         directory('run', run, name)
 

@@ -11,6 +11,11 @@ application instance configuration, log and run-time files.  It also
 sets or reads options that can be read by other programs to find out
 where to place files:
 
+cache-directory
+    The name of the directory where application instances should write
+    cached copies of replacable data.  This is /var/cache/NAME, where
+    NAME is the deployment name.
+
 crontab-directory
     The name of the directory in which cron jobs should be placed.
     This is /etc/cron.d.
@@ -19,6 +24,11 @@ etc-directory
     The name of the directory where configuration files should be
     placed.  This is /etc/NAME, where NAME is the deployment
     name.
+
+lib-directory
+    The name of the directory where application instances should write
+    valuable data.  This is /var/lib/NAME, where NAME is
+    the deployment name.
 
 log-directory
     The name of the directory where application instances should write
