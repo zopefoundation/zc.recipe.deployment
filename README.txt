@@ -27,8 +27,8 @@ etc-directory
 
 lib-directory
     The name of the directory where application instances should write
-    valuable data.  This is /var/lib/NAME, where NAME is
-    the deployment name.
+    valuable data.  This is /var/lib/NAME, where NAME is the deployment
+    name.
 
 log-directory
     The name of the directory where application instances should write
