@@ -61,9 +61,12 @@ by other recipes:
     [foo]
     __buildout_installed__ =
     ...
+    cache-directory = PREFIX/var/cache/foo
     crontab-directory = PREFIX/etc/cron.d
     etc-directory = PREFIX/etc/foo
+    etc-prefix = PREFIX/etc
     etc-user = USER
+    lib-directory = PREFIX/var/lib/foo
     log-directory = PREFIX/var/log/foo
     logrotate-directory = PREFIX/etc/logrotate.d
     name = foo
@@ -72,6 +75,7 @@ by other recipes:
     recipe = zc.recipe.deployment
     run-directory = PREFIX/var/run/foo
     user = USER
+    var-prefix = PREFIX/var
 
 If we uninstall, then the directories are removed.
 
@@ -250,9 +254,12 @@ name can be specified explicitly:
     [foo]
     __buildout_installed__ =
     ...
+    cache-directory = PREFIX/var/cache/bar
     crontab-directory = PREFIX/etc/cron.d
     etc-directory = PREFIX/etc/bar
+    etc-prefix = PREFIX/etc
     etc-user = USER
+    lib-directory = PREFIX/var/lib/bar
     log-directory = PREFIX/var/log/bar
     logrotate-directory = PREFIX/etc/logrotate.d
     name = bar
@@ -261,6 +268,7 @@ name can be specified explicitly:
     recipe = zc.recipe.deployment
     run-directory = PREFIX/var/run/bar
     user = USER
+    var-prefix = PREFIX/var
 
 Note (here and earlier) that the options include the name option,
 which defaults to the part name.  Other parts that use the deployment
