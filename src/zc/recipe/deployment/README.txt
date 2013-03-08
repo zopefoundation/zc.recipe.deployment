@@ -21,6 +21,12 @@ Let's add a deployment to a sample buildout:
         Creating 'PREFIX/etc/foo',
         mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment:
+        Creating 'PREFIX/var/cache/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/lib/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
         Creating 'PREFIX/var/log/foo',
         mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment:
@@ -45,6 +51,12 @@ PREFIX/var/run have been created:
     >>> import os
     >>> print ls(os.path.join(sample_buildout, 'etc/foo'))
     drwxr-xr-x USER GROUP PREFIX/etc/foo
+
+    >>> print ls(os.path.join(sample_buildout, 'var/cache/foo'))
+    drwxr-xr-x USER GROUP PREFIX/var/cache/foo
+
+    >>> print ls(os.path.join(sample_buildout, 'var/lib/foo'))
+    drwxr-xr-x USER GROUP PREFIX/var/lib/foo
 
     >>> print ls(os.path.join(sample_buildout, 'var/log/foo'))
     drwxr-xr-x USER GROUP PREFIX/var/log/foo
@@ -86,18 +98,24 @@ If we uninstall, then the directories are removed.
     zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
     zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
     zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Removing 'PREFIX/var/cache/foo'.
+    zc.recipe.deployment: Removing 'PREFIX/var/lib/foo'.
     zc.recipe.deployment: Removing 'PREFIX/var/log/foo'.
     zc.recipe.deployment: Removing 'PREFIX/var/run/foo'.
 
     >>> import os
     >>> os.path.exists(os.path.join(sample_buildout, 'etc/foo'))
     False
+    >>> os.path.exists(os.path.join(sample_buildout, 'var/cache/foo'))
+    False
+    >>> os.path.exists(os.path.join(sample_buildout, 'var/lib/foo'))
+    False
     >>> os.path.exists(os.path.join(sample_buildout, 'var/log/foo'))
     False
     >>> os.path.exists(os.path.join(sample_buildout, 'var/run/foo'))
     False
 
-The log and run directories are only removed if they are empty.
+The cache, lib, log and run directories are only removed if they are empty.
 To see that, we'll put a file in each of the directories created:
 
     >>> print system(join('bin', 'buildout')),
@@ -105,6 +123,12 @@ To see that, we'll put a file in each of the directories created:
     Installing foo.
     zc.recipe.deployment:
         Creating 'PREFIX/etc/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/cache/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/lib/foo',
         mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment:
         Creating 'PREFIX/var/log/foo',
@@ -123,6 +147,8 @@ To see that, we'll put a file in each of the directories created:
         mode 755, user 'USER', group 'GROUP'
 
     >>> write(os.path.join(sample_buildout, 'etc/foo/x'), '')
+    >>> write(os.path.join(sample_buildout, 'var/cache/foo/x'), '')
+    >>> write(os.path.join(sample_buildout, 'var/lib/foo/x'), '')
     >>> write(os.path.join(sample_buildout, 'var/log/foo/x'), '')
     >>> write(os.path.join(sample_buildout, 'var/run/foo/x'), '')
 
@@ -135,11 +161,19 @@ And then uninstall:
     zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
     zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
     zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Can't remove non-empty directory 'PREFIX/var/cache/foo'.
+    zc.recipe.deployment: Can't remove non-empty directory 'PREFIX/var/lib/foo'.
     zc.recipe.deployment: Can't remove non-empty directory 'PREFIX/var/log/foo'.
     zc.recipe.deployment: Can't remove non-empty directory 'PREFIX/var/run/foo'.
 
     >>> os.path.exists(os.path.join(sample_buildout, 'etc/foo'))
     False
+
+    >>> print ls(os.path.join(sample_buildout, 'var/cache/foo'))
+    drwxr-xr-x USER GROUP PREFIX/var/cache/foo
+
+    >>> print ls(os.path.join(sample_buildout, 'var/lib/foo'))
+    drwxr-xr-x USER GROUP PREFIX/var/lib/foo
 
     >>> print ls(os.path.join(sample_buildout, 'var/log/foo'))
     drwxr-xr-x USER GROUP PREFIX/var/log/foo
@@ -160,6 +194,12 @@ are removed:
         Creating 'PREFIX/etc/foo',
         mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment:
+        Updating 'PREFIX/var/cache/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Updating 'PREFIX/var/lib/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
         Updating 'PREFIX/var/log/foo',
         mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment:
@@ -175,6 +215,8 @@ are removed:
         Creating 'PREFIX/etc/logrotate.d',
         mode 755, user 'USER', group 'GROUP'
 
+    >>> os.remove(os.path.join(sample_buildout, 'var/cache/foo/x'))
+    >>> os.remove(os.path.join(sample_buildout, 'var/lib/foo/x'))
     >>> os.remove(os.path.join(sample_buildout, 'var/log/foo/x'))
     >>> os.remove(os.path.join(sample_buildout, 'var/run/foo/x'))
 
@@ -185,10 +227,16 @@ are removed:
     zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
     zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
     zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Removing 'PREFIX/var/cache/foo'.
+    zc.recipe.deployment: Removing 'PREFIX/var/lib/foo'.
     zc.recipe.deployment: Removing 'PREFIX/var/log/foo'.
     zc.recipe.deployment: Removing 'PREFIX/var/run/foo'.
 
     >>> os.path.exists('' + os.path.join(sample_buildout, 'PREFIX/etc/foo'))
+    False
+    >>> os.path.exists('' + os.path.join(sample_buildout, 'PREFIX/var/cache/foo'))
+    False
+    >>> os.path.exists('' + os.path.join(sample_buildout, 'PREFIX/var/lib/foo'))
     False
     >>> os.path.exists('' + os.path.join(sample_buildout, 'PREFIX/var/log/foo'))
     False
@@ -222,6 +270,12 @@ name can be specified explicitly:
         Creating 'PREFIX/etc/bar',
         mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment:
+        Creating 'PREFIX/var/cache/bar',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/lib/bar',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
         Creating 'PREFIX/var/log/bar',
         mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment:
@@ -239,6 +293,12 @@ name can be specified explicitly:
 
     >>> print ls(os.path.join(sample_buildout, 'etc/bar'))
     drwxr-xr-x USER GROUP PREFIX/etc/bar
+
+    >>> print ls(os.path.join(sample_buildout, 'var/cache/bar'))
+    drwxr-xr-x USER GROUP PREFIX/var/cache/bar
+
+    >>> print ls(os.path.join(sample_buildout, 'var/lib/bar'))
+    drwxr-xr-x USER GROUP PREFIX/var/lib/bar
 
     >>> print ls(os.path.join(sample_buildout, 'var/log/bar'))
     drwxr-xr-x USER GROUP PREFIX/var/log/bar
@@ -310,11 +370,19 @@ Let's add a configuration file to our buildout:
     zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
     zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
     zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Removing 'PREFIX/var/cache/bar'.
+    zc.recipe.deployment: Removing 'PREFIX/var/lib/bar'.
     zc.recipe.deployment: Removing 'PREFIX/var/log/bar'.
     zc.recipe.deployment: Removing 'PREFIX/var/run/bar'.
     Installing foo.
     zc.recipe.deployment:
         Creating 'PREFIX/etc/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/cache/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/lib/foo',
         mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment:
         Creating 'PREFIX/var/log/foo',
@@ -564,11 +632,19 @@ This example creates PREFIX/etc/cron.d/foo-cron
     zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
     zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
     zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Removing 'PREFIX/var/cache/foo'.
+    zc.recipe.deployment: Removing 'PREFIX/var/lib/foo'.
     zc.recipe.deployment: Removing 'PREFIX/var/log/foo'.
     zc.recipe.deployment: Removing 'PREFIX/var/run/foo'.
     Installing foo.
     zc.recipe.deployment:
         Creating 'PREFIX/etc/bar',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/cache/bar',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/lib/bar',
         mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment:
         Creating 'PREFIX/var/log/bar',
@@ -645,6 +721,8 @@ but it doesn't have to.
     Uninstalling cron.
     Uninstalling foo.
     Running uninstall recipe.
+    zc.recipe.deployment: Removing 'PREFIX/var/cache/bar'.
+    zc.recipe.deployment: Removing 'PREFIX/var/lib/bar'.
     zc.recipe.deployment: Removing 'PREFIX/var/log/bar'.
 
 
@@ -701,6 +779,12 @@ run buildout.
     Installing foo.
     zc.recipe.deployment:
         Creating 'PREFIX/etc/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/cache/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/lib/foo',
         mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment:
         Creating 'PREFIX/var/log/foo',
@@ -872,6 +956,8 @@ While uninstalling, only the lines that the recipe installed are removed.
     zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
     zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
     zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Removing 'PREFIX/var/cache/foo'.
+    zc.recipe.deployment: Removing 'PREFIX/var/lib/foo'.
     zc.recipe.deployment: Removing 'PREFIX/var/log/foo'.
     zc.recipe.deployment: Removing 'PREFIX/var/run/foo'.
 
@@ -926,6 +1012,12 @@ readability.
     Installing foo.
     zc.recipe.deployment:
         Creating 'PREFIX/etc/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/cache/foo',
+        mode 755, user 'USER', group 'GROUP'
+    zc.recipe.deployment:
+        Creating 'PREFIX/var/lib/foo',
         mode 755, user 'USER', group 'GROUP'
     zc.recipe.deployment:
         Creating 'PREFIX/var/log/foo',
@@ -1003,6 +1095,8 @@ If we uninstall the file, the data will be the same as "original_data":
     zc.recipe.deployment: Removing 'PREFIX/etc/cron.d'.
     zc.recipe.deployment: Removing 'PREFIX/etc/init.d'.
     zc.recipe.deployment: Removing 'PREFIX/etc/logrotate.d'.
+    zc.recipe.deployment: Removing 'PREFIX/var/cache/foo'.
+    zc.recipe.deployment: Removing 'PREFIX/var/lib/foo'.
     zc.recipe.deployment: Removing 'PREFIX/var/log/foo'.
     zc.recipe.deployment: Removing 'PREFIX/var/run/foo'.
 

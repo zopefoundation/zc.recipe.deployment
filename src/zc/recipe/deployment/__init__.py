@@ -98,6 +98,8 @@ class Install:
         created = []
         try:
             make_dir(options['etc-directory'], etc_uid, etc_gid, 0755, created)
+            make_dir(options['cache-directory'], run_uid, run_gid, 0755, created)
+            make_dir(options['lib-directory'], run_uid, run_gid, 0755, created)
             make_dir(options['log-directory'], run_uid, run_gid, 0755, created)
             make_dir(options['run-directory'], run_uid, run_gid, 0750, created)
             if options['prefix'] != '/':
@@ -130,7 +132,7 @@ def uninstall(name, options):
     directories = ()
     if options.get('prefix', '/') != '/':
         directories = ('crontab', 'rc', 'logrotate')
-    for d in directories + ('log', 'run'):
+    for d in directories + ('cache', 'lib', 'log', 'run'):
         path = options[d+'-directory']
         if os.path.isdir(path):
             if os.listdir(path):
