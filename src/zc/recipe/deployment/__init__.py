@@ -16,6 +16,7 @@
 $Id: deployment.py 14934 2006-11-10 23:57:33Z jim $
 """
 
+import ConfigParser
 import grp
 import logging
 import os
@@ -40,6 +41,21 @@ class Install:
 
         etc = os.path.join(
             prefix, options.get('etc-prefix') or options.get('etc') or 'etc')
+
+        cfg = os.path.join(etc, "zc.recipe.deployment.cfg")
+        cp = ConfigParser.RawConfigParser()
+        cp.optionxform = str
+        cp.read(cfg)
+        if cp.has_section("deployment"):
+            #import pdb; pdb.set_trace()
+            for key in cp.options("deployment"):
+                if key in ("log", "run", "var-prefix"):
+                    value = cp.get("deployment", key)
+                    if value and not options.get(key):
+                        options[key] = value
+                elif key:
+                    raise zc.buildout.UserError(
+                        "disallowed option %s in system configuration" % key)
 
         var = os.path.join(prefix, options.get('var-prefix') or 'var')
         if options.get('var-prefix'):

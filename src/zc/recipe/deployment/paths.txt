@@ -303,3 +303,133 @@ If ``var-prefix`` is used in conjunction with the (legacy) ``log`` and
      'run': '/run/someplace',
      'run-directory': '/big-disk/run/myapp',
      'var-prefix': '/big-disk'}
+
+
+Overriding settings from the target system
+------------------------------------------
+
+A common requirement is to be able to locate large bodies of data in a
+different part of the filesystem hierarchy, usually to take advantage of
+disks with different behaviorial characteristics (capacity, performance).
+
+In these cases, the right locations for different kinds of files depends
+on the resources available on the deployment target rather than the
+software being deployed.  To support this, the deployment recipe can
+read a system-wide configuration file located at:
+
+    ${:etc-prerfix}/zc.recipe.deployment.cfg
+
+If the file doesn't exist, we get the behavriors described above.  If it
+does, the file can affect the roots of the data locations (the
+directories traditionally located in /var/).  The /etc/ directories
+cannot be affected.
+
+To avoid needing to write into the system directories for this
+demonstration, we're going to control the ``etc-prefix`` setting in all
+cases.
+
+    >>> import os.path
+
+    >>> config_path = os.path.join(
+    ...     sample_buildout, 'zc.recipe.deployment.cfg')
+
+    >>> write(config_path,
+    ... '''\
+    ... [deployment]
+    ... var-prefix = /mnt/fatdisk
+    ... ''')
+
+    >>> compute({"etc-prefix": sample_buildout})
+    {'cache-directory': '/mnt/fatdisk/cache/myapp',
+     'crontab-directory': 'PREFIX/cron.d',
+     'etc-directory': 'PREFIX/myapp',
+     'etc-prefix': 'PREFIX',
+     'lib-directory': '/mnt/fatdisk/lib/myapp',
+     'log-directory': '/mnt/fatdisk/log/myapp',
+     'logrotate-directory': 'PREFIX/logrotate.d',
+     'name': 'myapp',
+     'prefix': '/',
+     'rc-directory': 'PREFIX/init.d',
+     'run-directory': '/mnt/fatdisk/run/myapp',
+     'var-prefix': '/mnt/fatdisk'}
+
+    >>> compute({"etc": sample_buildout})
+    {'cache-directory': '/mnt/fatdisk/cache/myapp',
+     'crontab-directory': 'PREFIX/cron.d',
+     'etc': 'PREFIX',
+     'etc-directory': 'PREFIX/myapp',
+     'etc-prefix': 'PREFIX',
+     'lib-directory': '/mnt/fatdisk/lib/myapp',
+     'log-directory': '/mnt/fatdisk/log/myapp',
+     'logrotate-directory': 'PREFIX/logrotate.d',
+     'name': 'myapp',
+     'prefix': '/',
+     'rc-directory': 'PREFIX/init.d',
+     'run-directory': '/mnt/fatdisk/run/myapp',
+     'var-prefix': '/mnt/fatdisk'}
+
+The ``log`` and ``run`` settings can be used here, though that's less
+interesting than ``var-prefix``:
+
+    >>> write(config_path,
+    ... '''\
+    ... [deployment]
+    ... log = /mnt/fatdisk/logs
+    ... run = /mnt/scratch
+    ... ''')
+
+    >>> compute({"etc-prefix": sample_buildout})
+    {'cache-directory': '/var/cache/myapp',
+     'crontab-directory': 'PREFIX/cron.d',
+     'etc-directory': 'PREFIX/myapp',
+     'etc-prefix': 'PREFIX',
+     'lib-directory': '/var/lib/myapp',
+     'log': '/mnt/fatdisk/logs',
+     'log-directory': '/mnt/fatdisk/logs/myapp',
+     'logrotate-directory': 'PREFIX/logrotate.d',
+     'name': 'myapp',
+     'prefix': '/',
+     'rc-directory': 'PREFIX/init.d',
+     'run': '/mnt/scratch',
+     'run-directory': '/mnt/scratch/myapp',
+     'var-prefix': '/var'}
+
+
+Disallowed settings
+~~~~~~~~~~~~~~~~~~~
+
+Attempting to set the location of /etc from the configuration file is an
+error, since the /etc location has already been determined:
+
+    >>> write(config_path,
+    ... '''\
+    ... [deployment]
+    ... etc-prefix = /some/where
+    ... ''')
+
+    >>> compute({"etc": sample_buildout})
+    Traceback (most recent call last):
+    UserError: disallowed option etc-prefix in system configuration
+
+    >>> write(config_path,
+    ... '''\
+    ... [deployment]
+    ... etc = /some/where
+    ... ''')
+
+    >>> compute({"etc": sample_buildout})
+    Traceback (most recent call last):
+    UserError: disallowed option etc in system configuration
+
+Specific -directory settings cannot be included in the system
+configuration file:
+
+    >>> write(config_path,
+    ... '''\
+    ... [deployment]
+    ... log-directory = /some/fat/disk/for/logging
+    ... ''')
+
+    >>> compute({"etc": sample_buildout})
+    Traceback (most recent call last):
+    UserError: disallowed option log-directory in system configuration
