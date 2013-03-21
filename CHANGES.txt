@@ -4,9 +4,6 @@ Changes
 0.10.0 (unreleased)
 ===================
 
-- Absolutize paths generated based on ``prefix`` if ``prefix`` is
-  relative.
-
 - Add ``etc-prefix`` and ``var-prefix`` to specify new locations of
   these entire trees.  Final versions of these paths are exported.
 
