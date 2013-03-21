@@ -8,6 +8,7 @@ Path computations
    settings ``etc``, ``log``, and ``run``.  This is done to ensure we
    don't break existing uses that do not use the newer ``etc-prefix``
    and ``var-prefix`` settings, but the later are recommended.
+   The ``etc``, ``log``, and ``run`` settings are deprecated.
 
     >>> import logging
     >>> import pprint
@@ -92,7 +93,8 @@ specified hierarchy:
 
 The ``etc``, ``log`` and ``run`` settings cause the "roots" of the
 corresponding directories to be placed in the specified locations; the
-deployment-specific directory is still used:
+deployment-specific directory is still used.  Note that these are
+deprecated settings and cause warnings to be issued:
 
     >>> compute({"etc": "/antsy",
     ...          "log": "/log/someplace",
