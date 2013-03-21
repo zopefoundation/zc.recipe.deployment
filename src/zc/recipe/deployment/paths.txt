@@ -9,13 +9,23 @@ Path computations
    don't break existing uses that do not use the newer ``etc-prefix``
    and ``var-prefix`` settings, but the later are recommended.
 
+    >>> import logging
     >>> import pprint
     >>> import zc.recipe.deployment
 
+    >>> import zope.testing.loggingsupport
+
+    >>> logging.getLogger("zc.recipe.deployment").propagate = False
+    >>> handler = zope.testing.loggingsupport.InstalledHandler(
+    ...     "zc.recipe.deployment")
+
     >>> def compute(options, name="myapp"):
     ...     options = options.copy()
+    ...     handler.clear()
     ...     zc.recipe.deployment.Install(object(), name, options)
     ...     pprint.pprint(options, width=1)
+    ...     if handler.records:
+    ...         print handler
 
 Deployment-specific directories are created based on the name of the part:
 
@@ -103,13 +113,20 @@ deployment-specific directory is still used:
      'run': '/run/someplace',
      'run-directory': '/run/someplace/myapp',
      'var-prefix': '/usr/local/var'}
+    zc.recipe.deployment WARNING
+      using deprecated 'etc' setting
+    zc.recipe.deployment WARNING
+      using deprecated 'log' setting
+    zc.recipe.deployment WARNING
+      using deprecated 'run' setting
 
-If the ``etc`` and ``log`` settings are relative, the ``prefix`` setting
-also applies:
+If the ``etc``, ``log`` and ``run`` settings are relative, the
+``prefix`` setting also applies:
 
     >>> compute({"etc": "antsy",
     ...          "log": "var/someplace",
-    ...          "prefix": "/usr/local"})
+    ...          "prefix": "/usr/local",
+    ...          "run": "var/running"})
     {'cache-directory': '/usr/local/var/cache/myapp',
      'crontab-directory': '/usr/local/antsy/cron.d',
      'etc': 'antsy',
@@ -122,8 +139,15 @@ also applies:
      'name': 'myapp',
      'prefix': '/usr/local',
      'rc-directory': '/usr/local/antsy/init.d',
-     'run-directory': '/usr/local/var/run/myapp',
+     'run': 'var/running',
+     'run-directory': '/usr/local/var/running/myapp',
      'var-prefix': '/usr/local/var'}
+    zc.recipe.deployment WARNING
+      using deprecated 'etc' setting
+    zc.recipe.deployment WARNING
+      using deprecated 'log' setting
+    zc.recipe.deployment WARNING
+      using deprecated 'run' setting
 
 Output options ending in '-directory' can be specified directly; these
 values will be retained instead of being clobbered by computed values:
@@ -153,6 +177,10 @@ values will be retained instead of being clobbered by computed values:
      'rc-directory': '/my-rcs',
      'run-directory': '/variable/run-away',
      'var-prefix': '/usr/local/var'}
+    zc.recipe.deployment WARNING
+      using deprecated 'etc' setting
+    zc.recipe.deployment WARNING
+      found deprecated 'log' setting (used 'log-directory' instead)
 
 
 Paths are absolute
@@ -195,6 +223,10 @@ Output paths (option names ending in '-directory') are absolute, even if
      'rc-directory': '/my/prefix/my-rcs',
      'run-directory': '/my/prefix/var/run/myapp',
      'var-prefix': '/my/prefix/var'}
+    zc.recipe.deployment WARNING
+      using deprecated 'etc' setting
+    zc.recipe.deployment WARNING
+      using deprecated 'log' setting
 
 
 Specifying sub-tree prefixes
@@ -282,6 +314,8 @@ If ``etc-prefix`` and the (legacy) ``etc`` setting are both provided,
      'rc-directory': '/config/init.d',
      'run-directory': '/var/run/myapp',
      'var-prefix': '/var'}
+    zc.recipe.deployment WARNING
+      found deprecated 'etc' setting (used 'etc-prefix' instead)
 
 If ``var-prefix`` is used in conjunction with the (legacy) ``log`` and
 ``run`` settings, ``var-prefix`` wins:
@@ -303,6 +337,10 @@ If ``var-prefix`` is used in conjunction with the (legacy) ``log`` and
      'run': '/run/someplace',
      'run-directory': '/big-disk/run/myapp',
      'var-prefix': '/big-disk'}
+    zc.recipe.deployment WARNING
+      found deprecated 'log' setting (used 'var-prefix' instead)
+    zc.recipe.deployment WARNING
+      found deprecated 'run' setting (used 'var-prefix' instead)
 
 
 Overriding settings from the target system
@@ -367,32 +405,8 @@ cases.
      'rc-directory': 'PREFIX/init.d',
      'run-directory': '/mnt/fatdisk/run/myapp',
      'var-prefix': '/mnt/fatdisk'}
-
-The ``log`` and ``run`` settings can be used here, though that's less
-interesting than ``var-prefix``:
-
-    >>> write(config_path,
-    ... '''\
-    ... [deployment]
-    ... log = /mnt/fatdisk/logs
-    ... run = /mnt/scratch
-    ... ''')
-
-    >>> compute({"etc-prefix": sample_buildout})
-    {'cache-directory': '/var/cache/myapp',
-     'crontab-directory': 'PREFIX/cron.d',
-     'etc-directory': 'PREFIX/myapp',
-     'etc-prefix': 'PREFIX',
-     'lib-directory': '/var/lib/myapp',
-     'log': '/mnt/fatdisk/logs',
-     'log-directory': '/mnt/fatdisk/logs/myapp',
-     'logrotate-directory': 'PREFIX/logrotate.d',
-     'name': 'myapp',
-     'prefix': '/',
-     'rc-directory': 'PREFIX/init.d',
-     'run': '/mnt/scratch',
-     'run-directory': '/mnt/scratch/myapp',
-     'var-prefix': '/var'}
+    zc.recipe.deployment WARNING
+      using deprecated 'etc' setting
 
 
 Disallowed settings
@@ -409,7 +423,7 @@ error, since the /etc location has already been determined:
 
     >>> compute({"etc": sample_buildout})
     Traceback (most recent call last):
-    UserError: disallowed option etc-prefix in system configuration
+    UserError: disallowed option 'etc-prefix' in system configuration
 
     >>> write(config_path,
     ... '''\
@@ -419,7 +433,29 @@ error, since the /etc location has already been determined:
 
     >>> compute({"etc": sample_buildout})
     Traceback (most recent call last):
-    UserError: disallowed option etc in system configuration
+    UserError: disallowed option 'etc' in system configuration
+
+The deprecated ``log`` and ``run`` settings cannot be used here:
+
+    >>> write(config_path,
+    ... '''\
+    ... [deployment]
+    ... log = /mnt/scratch
+    ... ''')
+
+    >>> compute({"etc": sample_buildout})
+    Traceback (most recent call last):
+    UserError: disallowed option 'log' in system configuration
+
+    >>> write(config_path,
+    ... '''\
+    ... [deployment]
+    ... run = /mnt/scratch
+    ... ''')
+
+    >>> compute({"etc": sample_buildout})
+    Traceback (most recent call last):
+    UserError: disallowed option 'run' in system configuration
 
 Specific -directory settings cannot be included in the system
 configuration file:
@@ -432,4 +468,4 @@ configuration file:
 
     >>> compute({"etc": sample_buildout})
     Traceback (most recent call last):
-    UserError: disallowed option log-directory in system configuration
+    UserError: disallowed option 'log-directory' in system configuration

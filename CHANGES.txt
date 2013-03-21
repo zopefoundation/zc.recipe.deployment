@@ -8,9 +8,11 @@ Changes
   relative.
 
 - Add ``etc-prefix`` and ``var-prefix`` to specify new locations of
-  these entire trees; used instead of the previously untested ``etc``,
-  ``log`` and ``run`` settings.  Final (absolute) versions of these
-  paths are always exported in the output.
+  these entire trees.  Final versions of these paths are exported.
+
+- Previously undocumented & untested ``etc``, ``log`` and ``run``
+  settings are deprecated.  Warnings are logged if their values are
+  used.
 
 - Add ``cache-directory`` and ``lib-directory`` to the set of output
   directories.

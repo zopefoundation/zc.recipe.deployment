@@ -28,6 +28,15 @@ import zc.buildout
 logger = logging.getLogger('zc.recipe.deployment')
 
 
+def deprecated(name, instead=None):
+    if instead:
+        msg = ("found deprecated '%s' setting (used '%s' instead)"
+               % (name, instead))
+    else:
+        msg = "using deprecated '%s' setting" % name
+    logger.warn(msg)
+
+
 class Install:
 
     def __init__(self, buildout, name, options):
@@ -39,29 +48,51 @@ class Install:
         prefix = os.path.join('/', options.get('prefix') or '/')
         options['prefix'] = prefix
 
-        etc = os.path.join(
-            prefix, options.get('etc-prefix') or options.get('etc') or 'etc')
+        etc_prefix = options.get('etc-prefix')
+        if not etc_prefix:
+            etc_prefix = options.get('etc')
+            if etc_prefix:
+                deprecated('etc')
+            else:
+                etc_prefix = 'etc'
+        elif options.get('etc'):
+            deprecated('etc', 'etc-prefix')
+        etc = os.path.join(prefix, etc_prefix)
 
         cfg = os.path.join(etc, "zc.recipe.deployment.cfg")
         cp = ConfigParser.RawConfigParser()
         cp.optionxform = str
         cp.read(cfg)
         if cp.has_section("deployment"):
-            for key in cp.options("deployment"):
-                if key in ("log", "run", "var-prefix"):
+            for key in sorted(cp.options("deployment")):
+                if key == "var-prefix":
                     value = cp.get("deployment", key)
                     if value and not options.get(key):
                         options[key] = value
-                elif key:
+                else:
                     raise zc.buildout.UserError(
-                        "disallowed option %s in system configuration" % key)
+                        "disallowed option %r in system configuration" % key)
 
         var = os.path.join(prefix, options.get('var-prefix') or 'var')
         if options.get('var-prefix'):
+            if options.get('log'):
+                deprecated('log', 'var-prefix')
             log = os.path.join(var, "log")
+            if options.get('run'):
+                deprecated('run', 'var-prefix')
             run = os.path.join(var, "run")
         else:
+            if options.get('log'):
+                if options.get('log-directory'):
+                    deprecated('log', 'log-directory')
+                else:
+                    deprecated('log')
             log = options.get('log') or 'var/log'
+            if options.get('run'):
+                if options.get('run-directory'):
+                    deprecated('run', 'run-directory')
+                else:
+                    deprecated('run')
             run = options.get('run') or 'var/run'
 
         def directory(key, base, *tail):
