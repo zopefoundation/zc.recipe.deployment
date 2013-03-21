@@ -60,7 +60,7 @@ def setUp(test):
 def test_suite():
     return unittest.TestSuite((
         doctest.DocFileSuite(
-            'paths.txt',
+            'paths.test',
             setUp=zc.buildout.testing.buildoutSetUp,
             tearDown=zc.buildout.testing.buildoutTearDown,
             checker=renormalizing.RENormalizing([
