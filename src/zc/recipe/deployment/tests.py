@@ -85,7 +85,10 @@ def test_suite():
                 # The order doesn't matter after this point
 
                 (re.compile('/.*/sample-buildout'), 'PREFIX'),
-                zc.buildout.testing.not_found,
+
+                # Same as zc.buildout.testing.not_found, copied since
+                # older versions of buildout don't define this.
+                (re.compile(r'Not found: [^\n]+/(\w|\.)+/\r?\n'), ''),
                ]),
             ),
         ))
