@@ -45,8 +45,10 @@ class Install:
             options['name'] = name
 
         name = options['name']
-        prefix = os.path.join('/', options.get('prefix') or '/')
-        options['prefix'] = prefix
+        prefix = options.get('prefix')
+        if not prefix:
+            prefix = '/'
+            options['prefix'] = prefix
 
         etc_prefix = options.get('etc-prefix')
         if not etc_prefix:
@@ -87,13 +89,13 @@ class Install:
                     deprecated('log', 'log-directory')
                 else:
                     deprecated('log')
-            log = options.get('log') or 'var/log'
+            log = os.path.join(prefix, options.get('log') or 'var/log')
             if options.get('run'):
                 if options.get('run-directory'):
                     deprecated('run', 'run-directory')
                 else:
                     deprecated('run')
-            run = options.get('run') or 'var/run'
+            run = os.path.join(prefix, options.get('run') or 'var/run')
 
         def directory(key, base, *tail):
             key += '-directory'
@@ -101,7 +103,7 @@ class Install:
             if setting:
                 path = os.path.join(prefix, setting)
             else:
-                path = os.path.join(prefix, base, *tail)
+                path = os.path.join(base, *tail)
             options[key] = path
 
         options['etc-prefix'] = etc
