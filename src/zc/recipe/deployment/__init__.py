@@ -47,7 +47,6 @@ class Install:
         cp.optionxform = str
         cp.read(cfg)
         if cp.has_section("deployment"):
-            #import pdb; pdb.set_trace()
             for key in cp.options("deployment"):
                 if key in ("log", "run", "var-prefix"):
                     value = cp.get("deployment", key)
