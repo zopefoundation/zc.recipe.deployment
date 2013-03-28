@@ -1,7 +1,7 @@
 Changes
 *******
 
-0.10.0 (unreleased)
+0.10.0 (2013-03-28)
 ===================
 
 - Add ``etc-prefix`` and ``var-prefix`` to specify new locations of
