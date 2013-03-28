@@ -17,8 +17,8 @@ Changes
 - Add system-wide configuration, allowing locations of the "root"
   directories to be specified for an entire machine.
 
-- Consistently refuse to clobber the *-directory inputs with unrelated
-  outputs; join input with prefix if relative.
+- Allow *-directory options (e.g. log-directory) to be overridden by
+  configuration data.
 
 
 0.9.0 (2011-11-21)
