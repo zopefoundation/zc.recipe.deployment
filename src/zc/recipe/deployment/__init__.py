@@ -165,7 +165,9 @@ def uninstall(name, options):
     if options.get('prefix', '/') != '/':
         directories = ('crontab', 'rc', 'logrotate')
     for d in directories + ('cache', 'lib', 'log', 'run'):
-        path = options[d+'-directory']
+        path = options.get(d+'-directory')
+        if not path:
+            continue
         if os.path.isdir(path):
             if os.listdir(path):
                 logger.warn("Can't remove non-empty directory %r.", path)

@@ -243,6 +243,36 @@ are removed:
     >>> os.path.exists('' + os.path.join(sample_buildout, 'PREFIX/var/run/foo'))
     False
 
+Prior to zc.recipe.deployment 0.10.0, some directories (eg., cache-directory,
+lib-directory) were not managed by zc.recipe.deployment.  So on uninstall, we
+can expect any nonexistent directory keys to be silently ignored.
+
+    >>> _ = system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> new_installed_contents = ""
+    >>> with open(
+    ...         os.path.join(sample_buildout, ".installed.cfg")) as fi:
+    ...     for line in fi.readlines():
+    ...         if (not line.startswith("cache-directory = ") and
+    ...                 not line.startswith("lib-directory = ")):
+    ...             new_installed_contents += line
+    >>> with open(
+    ...         os.path.join(sample_buildout, ".installed.cfg"), 'w') as fi:
+    ...     fi.write(new_installed_contents)
+    >>> print system(join('bin', 'buildout')+' buildout:parts='),
+    Uninstalling foo.
+    Running uninstall recipe.
+    zc.recipe.deployment: Removing '/tmp/tmpcokpi_buildoutSetUp/_TEST_/sample-buildout/etc/foo'
+    zc.recipe.deployment: Removing '/tmp/tmpcokpi_buildoutSetUp/_TEST_/sample-buildout/etc/cron.d'.
+    zc.recipe.deployment: Removing '/tmp/tmpcokpi_buildoutSetUp/_TEST_/sample-buildout/etc/init.d'.
+    zc.recipe.deployment: Removing '/tmp/tmpcokpi_buildoutSetUp/_TEST_/sample-buildout/etc/logrotate.d'.
+    zc.recipe.deployment: Removing '/tmp/tmpcokpi_buildoutSetUp/_TEST_/sample-buildout/var/log/foo'.
+    zc.recipe.deployment: Removing '/tmp/tmpcokpi_buildoutSetUp/_TEST_/sample-buildout/var/run/foo'.
+
+We'll finish the cleanup our modified .installed.cfg missed.
+
+    >>> os.removedirs(os.path.join(sample_buildout, 'var/cache/foo'))
+    >>> os.removedirs(os.path.join(sample_buildout, 'var/lib/foo'))
+
 
 Deployment Name
 ===============
