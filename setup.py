@@ -22,7 +22,7 @@ def read(*rnames):
 
 setup(
     name = name,
-    version='0.10.2',
+    version='0.10.3.dev0',
     author = 'Jim Fulton',
     author_email = 'jim@zope.com',
     description = 'ZC Buildout recipe for Unix deployments',
