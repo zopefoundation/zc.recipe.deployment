@@ -597,6 +597,70 @@ The recipe sets a location option that can be used by other recipes:
     location = PREFIX/etc/foo/x.cfg
     ...
 
+By default, the part name is used as the file name.  You can specify a
+name explicitly using the name option:
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo x.cfg
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
+    ...
+    ... [x.cfg]
+    ... recipe = zc.recipe.deployment:configuration
+    ... name = y.cfg
+    ... text = this is y
+    ... deployment = foo
+    ... ''' % (sample_buildout, user, user))
+
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    Uninstalling x.cfg.
+    Updating foo.
+    Installing x.cfg.
+    zc.recipe.deployment:
+        Updating 'PREFIX/etc/foo',
+        mode 755, user 'USER', group 'GROUP'
+
+    >>> cat(os.path.join(sample_buildout, 'etc/foo/y.cfg'))
+    this is y
+
+The name can be a path, or even absolute:
+
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo x.cfg
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
+    ...
+    ... [x.cfg]
+    ... recipe = zc.recipe.deployment:configuration
+    ... name = ${buildout:directory}/y.cfg
+    ... text = this is y also
+    ... deployment = foo
+    ... ''' % (sample_buildout, user, user))
+
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    Uninstalling x.cfg.
+    Updating foo.
+    Installing x.cfg.
+    zc.recipe.deployment:
+        Updating 'PREFIX/etc/foo',
+        mode 755, user 'USER', group 'GROUP'
+
+    >>> cat('y.cfg')
+    this is y also
+
 
 Cron support
 ============
