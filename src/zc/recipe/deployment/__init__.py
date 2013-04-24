@@ -130,7 +130,8 @@ class Install:
         created = []
         try:
             make_dir(options['etc-directory'], etc_uid, etc_gid, 0755, created)
-            make_dir(options['cache-directory'], run_uid, run_gid, 0755, created)
+            make_dir(options['cache-directory'],
+                     run_uid, run_gid, 0755, created)
             make_dir(options['lib-directory'], run_uid, run_gid, 0755, created)
             make_dir(options['log-directory'], run_uid, run_gid, 0755, created)
             make_dir(options['run-directory'], run_uid, run_gid, 0750, created)
@@ -211,7 +212,7 @@ class Configuration:
             directory = os.path.join(
                 buildout['buildout']['parts-directory'])
         options["directory"] = directory
-        options["location"] = os.path.join(directory, name)
+        options["location"] = os.path.join(directory, options.get('name', name))
 
     def install(self):
         options = self.options

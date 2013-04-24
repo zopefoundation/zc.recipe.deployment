@@ -1,6 +1,12 @@
 Changes
 *******
 
+1.0.0 (2013-04-2?)
+==================
+
+- Added a ``name`` option to the ``configuration`` recipe to allow
+  explicit control of generated file paths.
+
 
 0.10.3 (unreleased)
 ===================
