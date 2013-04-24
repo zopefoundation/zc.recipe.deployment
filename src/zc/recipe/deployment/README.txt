@@ -629,8 +629,13 @@ name explicitly using the name option:
     >>> cat(os.path.join(sample_buildout, 'etc/foo/y.cfg'))
     this is y
 
-The name can be a path, or even absolute:
+If name is given, only the file so named is created:
 
+    >>> ls(os.path.join(sample_buildout, 'etc', 'foo', 'x.cfg'))
+    Traceback (most recent call last):
+    OSError: [Errno 2] No such file or directory: 'PREFIX/etc/foo/x.cfg'
+
+The name can be a path, or even absolute:
 
     >>> write('buildout.cfg',
     ... '''
