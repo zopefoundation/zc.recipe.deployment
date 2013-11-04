@@ -17,6 +17,7 @@ $Id: deployment.py 14934 2006-11-10 23:57:33Z jim $
 """
 
 import ConfigParser
+import errno
 import grp
 import logging
 import os
@@ -239,7 +240,14 @@ class Configuration:
                         # parent directory may have already been removed
                         pass
                 raise
-        open(options['location'], 'w'+mode).write(text)
+        try:
+            original = open(options['location'], 'r'+mode).read()
+        except IOError as e:
+            if e.errno != errno.ENOENT:
+                raise
+            original = None
+        if original != text:
+            open(options['location'], 'w'+mode).write(text)
         return options['location']
 
     update = install

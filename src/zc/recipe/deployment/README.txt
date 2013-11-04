@@ -666,6 +666,23 @@ The name can be a path, or even absolute:
     >>> cat('y.cfg')
     this is y also
 
+If the content of the configuration file is unchanged between builds,
+and the path hasn't been changed, the file isn't actually written in
+subsequent builds.  This is helpful if processes that use the file watch
+for changes.
+
+    >>> mod_time = os.stat('y.cfg').st_mtime
+
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    Updating foo.
+    Updating x.cfg.
+    zc.recipe.deployment:
+        Updating 'PREFIX/etc/foo',
+        mode 755, user 'USER', group 'GROUP'
+
+    >>> os.stat('y.cfg').st_mtime == mod_time
+    True
+
 
 Cron support
 ============
