@@ -30,9 +30,9 @@ setup(
     keywords = 'deployment build',
     url = 'http://www.python.org/pypi/' + name,
     long_description = (
-    read('README.txt')
+    read('README.rst')
     + '\n' +
-    read('CHANGES.txt')
+    read('CHANGES.rst')
     + '\n' +
     'Detailed Documentation\n'
     '**********************\n'
