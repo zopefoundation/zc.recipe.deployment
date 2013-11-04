@@ -1,6 +1,13 @@
 Changes
 *******
 
+1.1.0 (2013-11-04)
+==================
+
+- Do not touch an existing configuration file if the content hasn't
+  changed.
+
+
 1.0.0 (2013-04-24)
 ==================
 

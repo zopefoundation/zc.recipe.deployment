@@ -17,6 +17,7 @@ $Id: deployment.py 14934 2006-11-10 23:57:33Z jim $
 """
 
 import ConfigParser
+import errno
 import grp
 import logging
 import os
@@ -221,7 +222,8 @@ class Configuration:
             if 'text' in options:
                 raise zc.buildout.UserError(
                     "Cannot specify both file and text options")
-            text = open(options['file'], 'r'+mode).read()
+            with open(options['file'], 'r'+mode) as f:
+                text = f.read()
         else:
             text = options['text']
         deployment = options.get('deployment')
@@ -239,7 +241,16 @@ class Configuration:
                         # parent directory may have already been removed
                         pass
                 raise
-        open(options['location'], 'w'+mode).write(text)
+        try:
+            with open(options['location'], 'r'+mode) as f:
+                original = f.read()
+        except IOError as e:
+            if e.errno != errno.ENOENT:
+                raise
+            original = None
+        if original != text:
+            with open(options['location'], 'w'+mode) as f:
+                f.write(text)
         return options['location']
 
     update = install
