@@ -1,6 +1,9 @@
 Changes
 *******
 
+- Added an ``on-change`` option to the configuration recipe to run a
+  command when a configuration file changes.
+
 1.1.0 (2013-11-04)
 ==================
 
