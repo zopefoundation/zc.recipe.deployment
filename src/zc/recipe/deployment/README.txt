@@ -683,6 +683,96 @@ for changes.
     >>> os.stat('y.cfg').st_mtime == mod_time
     True
 
+Running a command when a configuration file changes
+---------------------------------------------------
+
+Often, when working with configuration files, you'll need to restart
+processes when configuration files change.  You can specify an
+``on-change`` option that takes a command to run whenever a
+configuration file changes:
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo x.cfg
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
+    ...
+    ... [x.cfg]
+    ... recipe = zc.recipe.deployment:configuration
+    ... name = ${buildout:directory}/y.cfg
+    ... text = this is y
+    ... deployment = foo
+    ... on-change = echo /etc/init.d/x start
+    ... ''' % (sample_buildout, user, user))
+
+    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    Uninstalling x.cfg.
+    Updating foo.
+    Installing x.cfg.
+    zc.recipe.deployment:
+        Updating 'PREFIX/etc/foo',
+        mode 755, user 'jim', group 'jim'
+    /etc/init.d/x start
+
+.. test
+
+
+   If we run this again, so the file doesn't change, then the command
+   isn't run:
+
+    >>> print system(join('bin', 'buildout')),
+    ... # doctest: +NORMALIZE_WHITESPACE
+    Updating foo.
+    Updating x.cfg.
+    zc.recipe.deployment:
+        Updating 'PREFIX/etc/foo',
+        mode 755, user 'jim', group 'jim'
+
+   If we screw up the command, buildout will see it:
+
+
+    >>> write('buildout.cfg',
+    ... '''
+    ... [buildout]
+    ... parts = foo x.cfg
+    ...
+    ... [foo]
+    ... recipe = zc.recipe.deployment
+    ... prefix = %s
+    ... user = %s
+    ... etc-user = %s
+    ...
+    ... [x.cfg]
+    ... recipe = zc.recipe.deployment:configuration
+    ... name = ${buildout:directory}/y.cfg
+    ... text = this is y
+    ... deployment = foo
+    ... on-change = echoxxx /etc/init.d/x start
+    ... ''' % (sample_buildout, user, user))
+
+    >>> print system(join('bin', 'buildout')),
+    ... # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
+    Uninstalling x.cfg.
+    Updating foo.
+    Installing x.cfg.
+    zc.recipe.deployment:
+        Updating 'PREFIX/etc/foo',
+        mode 755, user 'jim', group 'jim'
+    sh: echoxxx: not found
+    While:
+      Installing x.cfg.
+    <BLANKLINE>
+    An internal error occurred due to a bug in either zc.buildout or in a
+    recipe being used:
+    Traceback (most recent call last):
+    ...
+    SystemError: 'echoxxx /etc/init.d/x start' failed
+
 
 Cron support
 ============
@@ -710,7 +800,6 @@ option containing the command.
     ... ''' % (sample_buildout, user, user))
 
     >>> print system(join('bin', 'buildout')),
-    Uninstalling x.cfg.
     Updating foo.
     Installing cron.
 

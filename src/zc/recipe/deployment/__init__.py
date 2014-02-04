@@ -251,6 +251,10 @@ class Configuration:
         if original != text:
             with open(options['location'], 'w'+mode) as f:
                 f.write(text)
+            on_change = options.get('on-change')
+            if on_change:
+                if os.system(on_change):
+                    raise SystemError("%r failed" % on_change)
         return options['location']
 
     update = install
