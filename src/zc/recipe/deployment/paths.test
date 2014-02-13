@@ -26,7 +26,7 @@ Path computations
     ...     zc.recipe.deployment.Install(object(), name, options)
     ...     pprint.pprint(options, width=1)
     ...     if handler.records:
-    ...         print handler
+    ...         print(handler)
 
 Deployment-specific directories are created based on the name of the part:
 
@@ -457,6 +457,7 @@ error, since the /etc location has already been determined:
 
     >>> compute({"etc": sample_buildout})
     Traceback (most recent call last):
+    ...
     UserError: disallowed option 'etc-prefix' in system configuration
 
     >>> write(config_path,

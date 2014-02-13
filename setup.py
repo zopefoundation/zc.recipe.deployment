@@ -43,7 +43,7 @@ setup(
     '**********************\n'
     ),
 
-    install_requires = ['setuptools'],
+    install_requires = ['setuptools', 'six'],
     extras_require = {
         'test': [
             'zc.buildout',

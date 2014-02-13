@@ -15,7 +15,8 @@ Let's add a deployment to a sample buildout:
     ... etc-user = %s
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> from six import print_
+    >>> print_(system(join('bin', 'buildout')), end='')
     Installing foo.
     zc.recipe.deployment:
         Creating 'PREFIX/etc/foo',
@@ -49,19 +50,19 @@ Now we can see that directories named foo in PREFIX/etc, PREFIX/var/log and
 PREFIX/var/run have been created:
 
     >>> import os
-    >>> print ls(os.path.join(sample_buildout, 'etc/foo'))
+    >>> print_(ls(os.path.join(sample_buildout, 'etc/foo')))
     drwxr-xr-x USER GROUP PREFIX/etc/foo
 
-    >>> print ls(os.path.join(sample_buildout, 'var/cache/foo'))
+    >>> print_(ls(os.path.join(sample_buildout, 'var/cache/foo')))
     drwxr-xr-x USER GROUP PREFIX/var/cache/foo
 
-    >>> print ls(os.path.join(sample_buildout, 'var/lib/foo'))
+    >>> print_(ls(os.path.join(sample_buildout, 'var/lib/foo')))
     drwxr-xr-x USER GROUP PREFIX/var/lib/foo
 
-    >>> print ls(os.path.join(sample_buildout, 'var/log/foo'))
+    >>> print_(ls(os.path.join(sample_buildout, 'var/log/foo')))
     drwxr-xr-x USER GROUP PREFIX/var/log/foo
 
-    >>> print ls(os.path.join(sample_buildout, 'var/run/foo'))
+    >>> print_(ls(os.path.join(sample_buildout, 'var/run/foo')))
     drwxr-x--- USER GROUP PREFIX/var/run/foo
 
 By looking at .installed.cfg, we can see the options available for use
@@ -91,7 +92,7 @@ by other recipes:
 
 If we uninstall, then the directories are removed.
 
-    >>> print system(join('bin', 'buildout')+' buildout:parts='),
+    >>> print_(system(join('bin', 'buildout')+' buildout:parts='), end='')
     Uninstalling foo.
     Running uninstall recipe.
     zc.recipe.deployment: Removing 'PREFIX/etc/foo'
@@ -118,7 +119,7 @@ If we uninstall, then the directories are removed.
 The cache, lib, log and run directories are only removed if they are empty.
 To see that, we'll put a file in each of the directories created:
 
-    >>> print system(join('bin', 'buildout')),
+    >>> print_(system(join('bin', 'buildout')), end='')
     ... # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     Installing foo.
     zc.recipe.deployment:
@@ -154,7 +155,7 @@ To see that, we'll put a file in each of the directories created:
 
 And then uninstall:
 
-    >>> print system(join('bin', 'buildout')+' buildout:parts='),
+    >>> print_(system(join('bin', 'buildout')+' buildout:parts='), end='')
     Uninstalling foo.
     Running uninstall recipe.
     zc.recipe.deployment: Removing 'PREFIX/etc/foo'
@@ -169,16 +170,16 @@ And then uninstall:
     >>> os.path.exists(os.path.join(sample_buildout, 'etc/foo'))
     False
 
-    >>> print ls(os.path.join(sample_buildout, 'var/cache/foo'))
+    >>> print_(ls(os.path.join(sample_buildout, 'var/cache/foo')))
     drwxr-xr-x USER GROUP PREFIX/var/cache/foo
 
-    >>> print ls(os.path.join(sample_buildout, 'var/lib/foo'))
+    >>> print_(ls(os.path.join(sample_buildout, 'var/lib/foo')))
     drwxr-xr-x USER GROUP PREFIX/var/lib/foo
 
-    >>> print ls(os.path.join(sample_buildout, 'var/log/foo'))
+    >>> print_(ls(os.path.join(sample_buildout, 'var/log/foo')))
     drwxr-xr-x USER GROUP PREFIX/var/log/foo
 
-    >>> print ls(os.path.join(sample_buildout, 'var/run/foo'))
+    >>> print_(ls(os.path.join(sample_buildout, 'var/run/foo')))
     drwxr-x--- USER GROUP PREFIX/var/run/foo
 
 Here we see that the var and run directories are kept.  The etc
@@ -188,7 +189,7 @@ it and all of its data are expendible.
 If we reinstall, remove the files, and uninstall, then the directories
 are removed:
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Installing foo.
     zc.recipe.deployment:
         Creating 'PREFIX/etc/foo',
@@ -220,7 +221,7 @@ are removed:
     >>> os.remove(os.path.join(sample_buildout, 'var/log/foo/x'))
     >>> os.remove(os.path.join(sample_buildout, 'var/run/foo/x'))
 
-    >>> print system(join('bin', 'buildout')+' buildout:parts='),
+    >>> print_(system(join('bin', 'buildout')+' buildout:parts='), end='')
     Uninstalling foo.
     Running uninstall recipe.
     zc.recipe.deployment: Removing 'PREFIX/etc/foo'
@@ -257,8 +258,8 @@ can expect any nonexistent directory keys to be silently ignored.
     ...             new_installed_contents += line
     >>> with open(
     ...         os.path.join(sample_buildout, ".installed.cfg"), 'w') as fi:
-    ...     fi.write(new_installed_contents)
-    >>> print system(join('bin', 'buildout')+' buildout:parts='),
+    ...     _ = fi.write(new_installed_contents)
+    >>> print_(system(join('bin', 'buildout')+' buildout:parts='), end='')
     Uninstalling foo.
     Running uninstall recipe.
     zc.recipe.deployment: Removing '/tmp/tmpcokpi_buildoutSetUp/_TEST_/sample-buildout/etc/foo'
@@ -294,7 +295,7 @@ name can be specified explicitly:
     ... etc-user = %s
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Installing foo.
     zc.recipe.deployment:
         Creating 'PREFIX/etc/bar',
@@ -321,19 +322,19 @@ name can be specified explicitly:
         Creating 'PREFIX/etc/logrotate.d',
         mode 755, user 'USER', group 'GROUP'
 
-    >>> print ls(os.path.join(sample_buildout, 'etc/bar'))
+    >>> print_(ls(os.path.join(sample_buildout, 'etc/bar')))
     drwxr-xr-x USER GROUP PREFIX/etc/bar
 
-    >>> print ls(os.path.join(sample_buildout, 'var/cache/bar'))
+    >>> print_(ls(os.path.join(sample_buildout, 'var/cache/bar')))
     drwxr-xr-x USER GROUP PREFIX/var/cache/bar
 
-    >>> print ls(os.path.join(sample_buildout, 'var/lib/bar'))
+    >>> print_(ls(os.path.join(sample_buildout, 'var/lib/bar')))
     drwxr-xr-x USER GROUP PREFIX/var/lib/bar
 
-    >>> print ls(os.path.join(sample_buildout, 'var/log/bar'))
+    >>> print_(ls(os.path.join(sample_buildout, 'var/log/bar')))
     drwxr-xr-x USER GROUP PREFIX/var/log/bar
 
-    >>> print ls(os.path.join(sample_buildout, 'var/run/bar'))
+    >>> print_(ls(os.path.join(sample_buildout, 'var/run/bar')))
     drwxr-x--- USER GROUP PREFIX/var/run/bar
 
     >>> cat('.installed.cfg') # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
@@ -393,7 +394,7 @@ Let's add a configuration file to our buildout:
     ...        zzz
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Uninstalling foo.
     Running uninstall recipe.
     zc.recipe.deployment: Removing 'PREFIX/etc/bar'
@@ -460,7 +461,7 @@ deployment etc directory:
     ... deployment = foo
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Uninstalling x.cfg.
     Updating foo.
     Installing x.cfg.
@@ -498,7 +499,7 @@ If a directory is specified, then the file is placed in the directory.
     ... deployment = foo
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Uninstalling x.cfg.
     Updating foo.
     Installing x.cfg.
@@ -537,7 +538,7 @@ A directory option works only with a deployment option.
     ... directory = etc/foobar
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')),
+    >>> print_(system(join('bin', 'buildout')), end='')
     Uninstalling x.cfg.
     Updating foo.
     Installing x.cfg.
@@ -574,7 +575,7 @@ configuration:
     ... deployment = foo
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Uninstalling x.cfg.
     Updating foo.
     Installing x.cfg.
@@ -618,7 +619,7 @@ name explicitly using the name option:
     ... deployment = foo
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Uninstalling x.cfg.
     Updating foo.
     Installing x.cfg.
@@ -631,9 +632,8 @@ name explicitly using the name option:
 
 If name is given, only the file so named is created:
 
-    >>> ls(os.path.join(sample_buildout, 'etc', 'foo', 'x.cfg'))
-    Traceback (most recent call last):
-    OSError: [Errno 2] No such file or directory: 'PREFIX/etc/foo/x.cfg'
+    >>> os.path.exists(os.path.join(sample_buildout, 'etc', 'foo', 'x.cfg'))
+    False
 
 The name can be a path, or even absolute:
 
@@ -655,7 +655,7 @@ The name can be a path, or even absolute:
     ... deployment = foo
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Uninstalling x.cfg.
     Updating foo.
     Installing x.cfg.
@@ -673,7 +673,7 @@ for changes.
 
     >>> mod_time = os.stat('y.cfg').st_mtime
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Updating foo.
     Updating x.cfg.
     zc.recipe.deployment:
@@ -710,7 +710,7 @@ configuration file changes:
     ... on-change = echo /etc/init.d/x start
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Uninstalling x.cfg.
     Updating foo.
     Installing x.cfg.
@@ -725,7 +725,7 @@ configuration file changes:
    If we run this again, so the file doesn't change, then the command
    isn't run:
 
-    >>> print system(join('bin', 'buildout')),
+    >>> print_(system(join('bin', 'buildout')), end='')
     ... # doctest: +NORMALIZE_WHITESPACE
     Updating foo.
     Updating x.cfg.
@@ -755,7 +755,7 @@ configuration file changes:
     ... on-change = echoxxx /etc/init.d/x start
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')),
+    >>> print_(system(join('bin', 'buildout')), end='')
     ... # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     Uninstalling x.cfg.
     Updating foo.
@@ -799,7 +799,7 @@ option containing the command.
     ... deployment = foo
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')),
+    >>> print_(system(join('bin', 'buildout')), end='')
     Updating foo.
     Installing cron.
 
@@ -829,7 +829,7 @@ This example creates PREFIX/etc/cron.d/foo-cron
     ... deployment = foo
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Uninstalling cron.
     Uninstalling foo.
     Running uninstall recipe.
@@ -894,7 +894,7 @@ but it doesn't have to.
     ... deployment = foo
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Uninstalling cron.
     Updating foo.
     Installing cron.
@@ -909,7 +909,7 @@ but it doesn't have to.
 
     >>> installed = [l for l in open('.installed.cfg')
     ...              if not l.startswith('prefix =')]
-    >>> open('.installed.cfg', 'w').write(''.join(installed))
+    >>> _ = open('.installed.cfg', 'w').write(''.join(installed))
 
     uninstall with some directories already gone:
 
@@ -922,7 +922,7 @@ but it doesn't have to.
     ... parts =
     ... ''')
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Uninstalling cron.
     Uninstalling foo.
     Running uninstall recipe.
@@ -933,7 +933,7 @@ but it doesn't have to.
 
 .. cleanup
 
-    >>> print system(join('bin', 'buildout')+' buildout:parts='),
+    >>> print_(system(join('bin', 'buildout')+' buildout:parts='), end='')
 
     >>> os.path.exists(os.path.join(sample_buildout, 'etc/cron.d/bar-cron'))
     False
@@ -951,7 +951,7 @@ be provided using the "text" or the "file" option.
 
 First let's create a file that will be used as the shared configuration file.
 
-    >>> open('y.cfg', 'w').write(
+    >>> _ = open('y.cfg', 'w').write(
     ... '''Some
     ... existing
     ... configuration
@@ -980,7 +980,7 @@ run buildout.
     ...        zzz
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Installing foo.
     zc.recipe.deployment:
         Creating 'PREFIX/etc/foo',
@@ -1008,7 +1008,7 @@ run buildout.
         mode 755, user 'USER', group 'GROUP'
     Installing y.cfg.
 
-    >>> print open('y.cfg', 'r').read()
+    >>> print_(open('y.cfg', 'r').read())
     Some
     existing
     configuration
@@ -1023,11 +1023,11 @@ run buildout.
 Running buildout again without modifying the configuration leaves the file the
 same.
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Updating foo.
     Updating y.cfg.
 
-    >>> print open('y.cfg', 'r').read()
+    >>> print_(open('y.cfg', 'r').read())
     Some
     existing
     configuration
@@ -1041,7 +1041,7 @@ same.
 
 If we add some more lines to the file
 
-    >>> open('y.cfg', 'a').write(
+    >>> _ = open('y.cfg', 'a').write(
     ... '''Some
     ... additional
     ... configuration
@@ -1070,13 +1070,13 @@ and run buildout again, but this time after modifying the configuration for
     ...        333
     ... ''' % (sample_buildout, user, user))
 
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Uninstalling y.cfg.
     Running uninstall recipe.
     Updating foo.
     Installing y.cfg.
 
-    >>> print open('y.cfg', 'r').read()
+    >>> print_(open('y.cfg', 'r').read())
     Some
     existing
     configuration
@@ -1120,7 +1120,7 @@ file.
     ... deployment = foo
     ... file = x.cfg
     ... ''' % (sample_buildout, user, user, sample_buildout))
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     While:
       Installing.
       Getting section y.cfg.
@@ -1130,13 +1130,13 @@ file.
 Oops. The path of the configuration file must exist. Let's create one.
 
     >>> write(join(sample_buildout, 'etc', 'z.cfg'), '')
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Uninstalling y.cfg.
     Running uninstall recipe.
     Updating foo.
     Installing y.cfg.
 
-    >>> print open(join(sample_buildout, 'etc', 'z.cfg'), 'r').read()
+    >>> print_(open(join(sample_buildout, 'etc', 'z.cfg'), 'r').read())
     <BLANKLINE>
     #[foo_y.cfg DO NOT MODIFY LINES FROM HERE#
     <BLANKLINE>
@@ -1152,7 +1152,7 @@ Oops. The path of the configuration file must exist. Let's create one.
 
 While uninstalling, only the lines that the recipe installed are removed.
 
-    >>> print system(join('bin', 'buildout')+' buildout:parts='),
+    >>> print_(system(join('bin', 'buildout')+' buildout:parts='), end='')
     Uninstalling y.cfg.
     Running uninstall recipe.
     Uninstalling foo.
@@ -1171,7 +1171,7 @@ But the files are not deleted.
     >>> os.path.exists('y.cfg')
     True
 
-    >>> print open('y.cfg', 'r').read()
+    >>> print_(open('y.cfg', 'r').read())
     Some
     existing
     configuration
@@ -1183,7 +1183,7 @@ But the files are not deleted.
     >>> os.path.exists(join(sample_buildout, 'etc', 'z.cfg'))
     True
 
-    >>> print open(join(sample_buildout, 'etc', 'z.cfg'), 'r').read()
+    >>> print_(open(join(sample_buildout, 'etc', 'z.cfg'), 'r').read())
     <BLANKLINE>
 
 
@@ -1195,7 +1195,7 @@ ends with a new line.  If it doesn't exist it adds one.  This is in
 addition to the blank line the recipe adds before the section to enhance
 readability.
 
-    >>> open('anotherconfig.cfg', 'w').write('one')
+    >>> _ = open('anotherconfig.cfg', 'w').write('one')
     >>> write('buildout.cfg',
     ... '''
     ... [buildout]
@@ -1213,7 +1213,7 @@ readability.
     ... deployment = foo
     ... text = I predict that there will be a blank line above this.
     ... ''' % (sample_buildout, user, user))
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Installing foo.
     zc.recipe.deployment:
         Creating 'PREFIX/etc/foo',
@@ -1241,7 +1241,7 @@ readability.
         mode 755, user 'USER', group 'GROUP'
     Installing y.cfg.
 
-    >>> print open('anotherconfig.cfg').read()
+    >>> print_(open('anotherconfig.cfg').read())
     one
     <BLANKLINE>
     #[foo_y.cfg DO NOT MODIFY LINES FROM HERE#
@@ -1251,8 +1251,8 @@ readability.
 
 But the recipe doesn't add a new line if there was one already at the end.
 
-    >>> open('anotherconfig.cfg', 'w').write('ends with a new line\n')
-    >>> print open('anotherconfig.cfg').read()
+    >>> _ = open('anotherconfig.cfg', 'w').write('ends with a new line\n')
+    >>> print_(open('anotherconfig.cfg').read())
     ends with a new line
     <BLANKLINE>
 
@@ -1275,13 +1275,13 @@ We modify the buildout configuration so that "install" is invoked again:
     ... deployment = foo
     ... text = there will still be only a single blank line above.
     ... ''' % (sample_buildout, user, user))
-    >>> print system(join('bin', 'buildout')), # doctest: +NORMALIZE_WHITESPACE
+    >>> print_(system(join('bin', 'buildout')), end='')
     Uninstalling y.cfg.
     Running uninstall recipe.
     Updating foo.
     Installing y.cfg.
 
-    >>> print open('anotherconfig.cfg').read()
+    >>> print_(open('anotherconfig.cfg').read())
     ends with a new line
     <BLANKLINE>
     #[foo_y.cfg DO NOT MODIFY LINES FROM HERE#
@@ -1291,7 +1291,7 @@ We modify the buildout configuration so that "install" is invoked again:
 
 If we uninstall the file, the data will be the same as "original_data":
 
-    >>> print system(join('bin', 'buildout')+' buildout:parts='),
+    >>> print_(system(join('bin', 'buildout')+' buildout:parts='), end='')
     Uninstalling y.cfg.
     Running uninstall recipe.
     Uninstalling foo.
@@ -1305,6 +1305,6 @@ If we uninstall the file, the data will be the same as "original_data":
     zc.recipe.deployment: Removing 'PREFIX/var/log/foo'.
     zc.recipe.deployment: Removing 'PREFIX/var/run/foo'.
 
-    >>> print open('anotherconfig.cfg').read()
+    >>> print_(open('anotherconfig.cfg').read())
     ends with a new line
     <BLANKLINE>
