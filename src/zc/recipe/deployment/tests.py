@@ -46,18 +46,21 @@ def ls(path):
     else:
         permissions = ['-']
     permissions = ''.join(permissions + [
-        perm(power, st.st_mode) for power in reversed(xrange(9))])
+        perm(power, st.st_mode) for power in reversed(range(9))])
     return '%s %s %s %s' % (permissions, user, group, path)
 
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('zc.recipe.deployment', test)
+    zc.buildout.testing.install('six', test)
     test.globs['user'] = getpass.getuser()
     test.globs['ls'] = ls
 
 
 def test_suite():
+    optionflags = (doctest.IGNORE_EXCEPTION_DETAIL |
+                   doctest.NORMALIZE_WHITESPACE)
     return unittest.TestSuite((
         doctest.DocFileSuite(
             'paths.test',
@@ -66,10 +69,12 @@ def test_suite():
             checker=renormalizing.RENormalizing([
                 (re.compile('/[^ ]*/sample-buildout'), 'PREFIX'),
                ]),
+            optionflags = optionflags,
             ),
         doctest.DocFileSuite(
             'README.txt',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
+            optionflags = optionflags,
             checker=renormalizing.RENormalizing([
                 (re.compile('\d+ \d\d\d\d-\d\d-\d\d \d\d:\d\d'), ''),
 
@@ -87,6 +92,10 @@ def test_suite():
                 (re.compile('/.*/sample-buildout'), 'PREFIX'),
                 (re.compile("command not found"), "not found"),
                 (re.compile("Initializing part"), "Initializing section"),
+                (re.compile(
+                    r"\nCouldn't find index page for 'six' "
+                    r"\(maybe misspelled\?\)"
+                    ), ""),
 
                 # some shells print the line number of the error
 

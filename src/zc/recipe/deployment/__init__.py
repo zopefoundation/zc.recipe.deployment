@@ -16,7 +16,7 @@
 $Id: deployment.py 14934 2006-11-10 23:57:33Z jim $
 """
 
-import ConfigParser
+from six.moves import configparser as ConfigParser
 import errno
 import grp
 import logging
@@ -130,19 +130,19 @@ class Install:
         etc_uid, etc_gid = pwd.getpwnam(etc_user)[2:4]
         created = []
         try:
-            make_dir(options['etc-directory'], etc_uid, etc_gid, 0755, created)
+            make_dir(options['etc-directory'], etc_uid, etc_gid, 0o755, created)
             make_dir(options['cache-directory'],
-                     run_uid, run_gid, 0755, created)
-            make_dir(options['lib-directory'], run_uid, run_gid, 0755, created)
-            make_dir(options['log-directory'], run_uid, run_gid, 0755, created)
-            make_dir(options['run-directory'], run_uid, run_gid, 0750, created)
+                     run_uid, run_gid, 0o755, created)
+            make_dir(options['lib-directory'], run_uid, run_gid, 0o755, created)
+            make_dir(options['log-directory'], run_uid, run_gid, 0o755, created)
+            make_dir(options['run-directory'], run_uid, run_gid, 0o750, created)
             if options['prefix'] != '/':
                 make_dir(options['crontab-directory'],
-                         etc_uid, etc_gid, 0755, created)
+                         etc_uid, etc_gid, 0o755, created)
                 make_dir(options['rc-directory'],
-                         etc_uid, etc_gid, 0755, created)
+                         etc_uid, etc_gid, 0o755, created)
                 make_dir(options['logrotate-directory'],
-                         etc_uid, etc_gid, 0755, created)
+                         etc_uid, etc_gid, 0o755, created)
         except Exception:
             for d in created:
                 try:
@@ -232,7 +232,7 @@ class Configuration:
             etc_uid, etc_gid = pwd.getpwnam(etc_user)[2:4]
             created = []
             try:
-                make_dir(options['directory'], etc_uid, etc_gid, 0755, created)
+                make_dir(options['directory'], etc_uid, etc_gid, 0o755, created)
             except Exception:
                 for d in created:
                     try:
