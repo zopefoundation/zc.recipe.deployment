@@ -1,6 +1,9 @@
 Changes
 *******
 
+1.2.0 (2014-02-04)
+==================
+
 - Added an ``on-change`` option to the configuration recipe to run a
   command when a configuration file changes.
 
