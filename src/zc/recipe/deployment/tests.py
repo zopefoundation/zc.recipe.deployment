@@ -81,11 +81,12 @@ def test_suite():
                 (re.compile("group '%s'" % group), "group 'GROUP'"),
                 (re.compile("%s %s" % (user, group)), "USER GROUP"),
                 (re.compile(user), "USER"),
-                (re.compile("command not found"), "not found"),
 
                 # The order doesn't matter after this point
 
                 (re.compile('/.*/sample-buildout'), 'PREFIX'),
+                (re.compile("command not found"), "not found"),
+                (re.compile("Initializing part"), "Initializing section"),
 
                 # Same as zc.buildout.testing.not_found, copied since
                 # older versions of buildout don't define this.

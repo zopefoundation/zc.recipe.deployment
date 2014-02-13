@@ -1124,7 +1124,7 @@ file.
     While:
       Installing.
       Getting section y.cfg.
-      Initializing part y.cfg.
+      Initializing section y.cfg.
     Error: Path 'PREFIX/etc/z.cfg' does not exist
 
 Oops. The path of the configuration file must exist. Let's create one.
