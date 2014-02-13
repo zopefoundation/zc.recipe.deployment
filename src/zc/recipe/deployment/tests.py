@@ -81,6 +81,7 @@ def test_suite():
                 (re.compile("group '%s'" % group), "group 'GROUP'"),
                 (re.compile("%s %s" % (user, group)), "USER GROUP"),
                 (re.compile(user), "USER"),
+                (re.compile("command not found"), "not found"),
 
                 # The order doesn't matter after this point
 
