@@ -10,6 +10,6 @@ install:
     - buildout bootstrap
     - ./bin/buildout
 script:
-    - ./bin/test -vvv
+    - ./bin/test -vvv --ndiff
 notifications:
     email: false
