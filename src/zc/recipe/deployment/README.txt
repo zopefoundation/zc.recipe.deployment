@@ -716,7 +716,7 @@ configuration file changes:
     Installing x.cfg.
     zc.recipe.deployment:
         Updating 'PREFIX/etc/foo',
-        mode 755, user 'jim', group 'jim'
+        mode 755, user 'USER', group 'GROUP'
     /etc/init.d/x start
 
 .. test
@@ -731,7 +731,7 @@ configuration file changes:
     Updating x.cfg.
     zc.recipe.deployment:
         Updating 'PREFIX/etc/foo',
-        mode 755, user 'jim', group 'jim'
+        mode 755, user 'USER', group 'GROUP'
 
    If we screw up the command, buildout will see it:
 
@@ -762,7 +762,7 @@ configuration file changes:
     Installing x.cfg.
     zc.recipe.deployment:
         Updating 'PREFIX/etc/foo',
-        mode 755, user 'jim', group 'jim'
+        mode 755, user 'USER', group 'GROUP'
     sh: echoxxx: not found
     While:
       Installing x.cfg.
