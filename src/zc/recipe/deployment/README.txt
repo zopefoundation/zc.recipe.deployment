@@ -763,7 +763,7 @@ configuration file changes:
     zc.recipe.deployment:
         Updating 'PREFIX/etc/foo',
         mode 755, user 'USER', group 'GROUP'
-    sh: echoxxx: not found
+    ... echoxxx: not found
     While:
       Installing x.cfg.
     <BLANKLINE>
