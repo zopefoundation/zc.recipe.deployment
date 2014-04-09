@@ -77,10 +77,10 @@ def test_suite():
                 # different order, they will break on systems where the user
                 # and group are the same (default of linux)
 
-                (re.compile("user '%s'" % user), "user 'USER'"),
-                (re.compile("group '%s'" % group), "group 'GROUP'"),
-                (re.compile("%s %s" % (user, group)), "USER GROUP"),
-                (re.compile(user), "USER"),
+                (re.compile("user '(%s|jim)'" % user), "user 'USER'"),
+                (re.compile("group '(%s|jim)'" % group), "group 'GROUP'"),
+                (re.compile("%s %s|jim jim" % (user, group)), "USER GROUP"),
+                (re.compile('%s|jim' % user), "USER"),
 
                 # The order doesn't matter after this point
 
