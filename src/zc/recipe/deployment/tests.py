@@ -86,6 +86,11 @@ def test_suite():
 
                 (re.compile('/.*/sample-buildout'), 'PREFIX'),
 
+                # some shells print the line number of the error
+
+                (re.compile('sh: 1: echoxxx: not found'),
+                    'sh: echoxxx: not found'),
+
                 # Same as zc.buildout.testing.not_found, copied since
                 # older versions of buildout don't define this.
                 (re.compile(r'Not found: [^\n]+/(\w|\.)+/\r?\n'), ''),
