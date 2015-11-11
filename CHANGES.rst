@@ -3,7 +3,7 @@ Changes
 
 - Python 3 support.
 
-1.2.0 (2014-02-04)
+1.3.0 (2015-11-11)
 ==================
 
 - Added an ``on-change`` option to the configuration recipe to run a
