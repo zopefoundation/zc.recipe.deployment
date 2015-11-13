@@ -25,7 +25,7 @@ where to place files:
     placed.  This defaults to /etc/NAME, where NAME is the deployment
     name.
 
-``var-prefix``
+``etc-prefix``
     The path of the directory where configuration should be stored for
     all applications.  This defaults to /etc.
 
