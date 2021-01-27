@@ -1,4 +1,14 @@
-recursive-include src/zc *.txt
-recursive-include src/zc *.test
-include *.txt
+# Generated from:
+# https://github.com/zopefoundation/meta/tree/master/config/buildout-recipe
 include *.rst
+include *.txt
+include buildout.cfg
+include tox.ini
+include .coveragerc
+
+recursive-include src *.pt
+recursive-include src *.py
+recursive-include src *.rst
+recursive-include src *.txt
+recursive-include src *.zcml
+recursive-include src *.test
