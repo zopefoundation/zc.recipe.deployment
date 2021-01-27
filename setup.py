@@ -17,43 +17,59 @@ sharedconfig = %(name)s:uninstall_shared_config
 
 ''' % globals()
 
+
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-setup(
-    name = name,
-    version='1.4.0.dev0',
-    author = 'Jim Fulton',
-    author_email = 'jim@zope.com',
-    description = 'ZC Buildout recipe for Unix deployments',
-    license = 'ZPL 2.1',
-    keywords = 'deployment build',
-    url = 'http://www.python.org/pypi/' + name,
-    long_description = (
-    read('README.rst')
-    + '\n' +
-    read('CHANGES.rst')
-    + '\n' +
-    'Detailed Documentation\n'
-    '**********************\n'
-    + '\n' +
-    read('src', 'zc', 'recipe', 'deployment', 'README.txt')
-    + '\n' +
-    'Download\n'
-    '**********************\n'
-    ),
 
-    install_requires = ['setuptools', 'six'],
-    extras_require = {
+setup(
+    name=name,
+    version='1.4.0.dev0',
+    author='Jim Fulton',
+    author_email='jim@zope.com',
+    description='ZC Buildout recipe for Unix deployments',
+    license='ZPL 2.1',
+    keywords='deployment build',
+    url='http://www.python.org/pypi/' + name,
+    long_description=(
+        read('README.rst')
+        + '\n' +
+        read('CHANGES.rst')
+        + '\n' +
+        'Detailed Documentation\n'
+        '**********************\n'
+        + '\n' +
+        read('src', 'zc', 'recipe', 'deployment', 'README.txt')
+        + '\n' +
+        'Download\n'
+        '**********************\n'
+    ),
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Framework :: Buildout",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "License :: OSI Approved :: Zope Public License",
+    ],
+    install_requires=['setuptools', 'six'],
+    extras_require={
         'test': [
             'zc.buildout',
             'zope.testing',
-            ]},
-    entry_points = entry_points,
-    package_dir = {'': 'src'},
-    packages = find_packages('src'),
-    namespace_packages = ['zc', 'zc.recipe'],
-    zip_safe = False,
-    include_package_data = True,
-    )
-
+        ]},
+    entry_points=entry_points,
+    package_dir={'': 'src'},
+    packages=find_packages('src'),
+    namespace_packages=['zc', 'zc.recipe'],
+    zip_safe=False,
+    include_package_data=True,
+)

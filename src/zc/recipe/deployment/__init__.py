@@ -35,7 +35,7 @@ def deprecated(name, instead=None):
                % (name, instead))
     else:
         msg = "using deprecated '%s' setting" % name
-    logger.warn(msg)
+    logger.warning(msg)
 
 
 class Install:
@@ -130,12 +130,32 @@ class Install:
         etc_uid, etc_gid = pwd.getpwnam(etc_user)[2:4]
         created = []
         try:
-            make_dir(options['etc-directory'], etc_uid, etc_gid, 0o755, created)
+            make_dir(
+                options['etc-directory'],
+                etc_uid,
+                etc_gid,
+                0o755,
+                created)
             make_dir(options['cache-directory'],
                      run_uid, run_gid, 0o755, created)
-            make_dir(options['lib-directory'], run_uid, run_gid, 0o755, created)
-            make_dir(options['log-directory'], run_uid, run_gid, 0o755, created)
-            make_dir(options['run-directory'], run_uid, run_gid, 0o750, created)
+            make_dir(
+                options['lib-directory'],
+                run_uid,
+                run_gid,
+                0o755,
+                created)
+            make_dir(
+                options['log-directory'],
+                run_uid,
+                run_gid,
+                0o755,
+                created)
+            make_dir(
+                options['run-directory'],
+                run_uid,
+                run_gid,
+                0o750,
+                created)
             if options['prefix'] != '/':
                 make_dir(options['crontab-directory'],
                          etc_uid, etc_gid, 0o755, created)
@@ -167,7 +187,7 @@ def uninstall(name, options):
     if options.get('prefix', '/') != '/':
         directories = ('crontab', 'rc', 'logrotate')
     for d in directories + ('cache', 'lib', 'log', 'run'):
-        path = options.get(d+'-directory')
+        path = options.get(d + '-directory')
         if not path:
             continue
         if os.path.isdir(path):
@@ -213,7 +233,8 @@ class Configuration:
             directory = os.path.join(
                 buildout['buildout']['parts-directory'])
         options["directory"] = directory
-        options["location"] = os.path.join(directory, options.get('name', name))
+        options["location"] = os.path.join(
+            directory, options.get('name', name))
 
     def install(self):
         options = self.options
@@ -222,7 +243,7 @@ class Configuration:
             if 'text' in options:
                 raise zc.buildout.UserError(
                     "Cannot specify both file and text options")
-            with open(options['file'], 'r'+mode) as f:
+            with open(options['file'], 'r' + mode) as f:
                 text = f.read()
         else:
             text = options['text']
@@ -232,7 +253,12 @@ class Configuration:
             etc_uid, etc_gid = pwd.getpwnam(etc_user)[2:4]
             created = []
             try:
-                make_dir(options['directory'], etc_uid, etc_gid, 0o755, created)
+                make_dir(
+                    options['directory'],
+                    etc_uid,
+                    etc_gid,
+                    0o755,
+                    created)
             except Exception:
                 for d in created:
                     try:
@@ -242,14 +268,14 @@ class Configuration:
                         pass
                 raise
         try:
-            with open(options['location'], 'r'+mode) as f:
+            with open(options['location'], 'r' + mode) as f:
                 original = f.read()
         except IOError as e:
             if e.errno != errno.ENOENT:
                 raise
             original = None
         if original != text:
-            with open(options['location'], 'w'+mode) as f:
+            with open(options['location'], 'w' + mode) as f:
                 f.write(text)
             on_change = options.get('on-change')
             if on_change:
@@ -284,6 +310,7 @@ class Crontab:
 
 begin_marker = '#[%s DO NOT MODIFY LINES FROM HERE#'
 end_marker = '#TILL HERE %s]#'
+
 
 class SharedConfig:
 
