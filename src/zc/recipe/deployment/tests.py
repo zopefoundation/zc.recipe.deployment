@@ -68,15 +68,15 @@ def test_suite():
             tearDown=zc.buildout.testing.buildoutTearDown,
             checker=renormalizing.RENormalizing([
                 (re.compile('/[^ ]*/sample-buildout'), 'PREFIX'),
-               ]),
-            optionflags = optionflags,
-            ),
+            ]),
+            optionflags=optionflags,
+        ),
         doctest.DocFileSuite(
             'README.txt',
             setUp=setUp, tearDown=zc.buildout.testing.buildoutTearDown,
-            optionflags = optionflags,
+            optionflags=optionflags,
             checker=renormalizing.RENormalizing([
-                (re.compile('\d+ \d\d\d\d-\d\d-\d\d \d\d:\d\d'), ''),
+                (re.compile(r'\d+ \d\d\d\d-\d\d-\d\d \d\d:\d\d'), ''),
 
                 # The ordering of these regexps is important.  If they are in a
                 # different order, they will break on systems where the user
@@ -95,7 +95,7 @@ def test_suite():
                 (re.compile(
                     r"\nCouldn't find index page for 'six' "
                     r"\(maybe misspelled\?\)"
-                    ), ""),
+                ), ""),
 
                 # some shells print the line number of the error
 
@@ -105,9 +105,6 @@ def test_suite():
                 # Same as zc.buildout.testing.not_found, copied since
                 # older versions of buildout don't define this.
                 (re.compile(r'Not found: [^\n]+/(\w|\.)+/\r?\n'), ''),
-               ]),
-            ),
-        ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+            ]),
+        ),
+    ))
