@@ -65,6 +65,7 @@ setup(
         'test': [
             'zc.buildout',
             'zope.testing',
+            'zope.testrunner',
         ]},
     entry_points=entry_points,
     package_dir={'': 'src'},
