@@ -12,14 +12,13 @@
 #
 ##############################################################################
 """Create a system deployment for an application."""
+import configparser as ConfigParser
 import errno
 import grp
 import logging
 import os
 import pwd
 import shutil
-
-import configparser as ConfigParser
 
 import zc.buildout
 
@@ -315,7 +314,8 @@ class SharedConfig:
     def __init__(self, buildout, name, options):
         self.options = options
         deployment = options.get('deployment')
-        options['entry_name'] = '{}_{}'.format(buildout[deployment]['name'], name)
+        options['entry_name'] = '{}_{}'.format(
+            buildout[deployment]['name'], name)
         if not os.path.exists(options['path']):
             raise zc.buildout.UserError(
                 "Path '%s' does not exist" % options['path'])
