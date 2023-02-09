@@ -48,13 +48,12 @@ def ls(path):
         permissions = ['-']
     permissions = ''.join(permissions + [
         perm(power, st.st_mode) for power in reversed(range(9))])
-    return '%s %s %s %s' % (permissions, user, group, path)
+    return '{} {} {} {}'.format(permissions, user, group, path)
 
 
 def setUp(test):
     zc.buildout.testing.buildoutSetUp(test)
     zc.buildout.testing.install_develop('zc.recipe.deployment', test)
-    zc.buildout.testing.install('six', test)
     test.globs['user'] = getpass.getuser()
     test.globs['ls'] = ls
 
@@ -85,7 +84,7 @@ def test_suite():
 
                 (re.compile("user '%s'" % user), "user 'USER'"),
                 (re.compile("group '%s'" % group), "group 'GROUP'"),
-                (re.compile("%s %s" % (user, group)), "USER GROUP"),
+                (re.compile("{} {}".format(user, group)), "USER GROUP"),
                 (re.compile(user), "USER"),
 
                 # The order doesn't matter after this point
@@ -93,10 +92,6 @@ def test_suite():
                 (re.compile('/.*/sample-buildout'), 'PREFIX'),
                 (re.compile("command not found"), "not found"),
                 (re.compile("Initializing part"), "Initializing section"),
-                (re.compile(
-                    r"\nCouldn't find index page for 'six' "
-                    r"\(maybe misspelled\?\)"
-                ), ""),
 
                 # some shells print the line number of the error
 

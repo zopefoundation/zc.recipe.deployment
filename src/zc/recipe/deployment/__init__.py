@@ -11,11 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Create a system deployment for an application
-
-$Id: deployment.py 14934 2006-11-10 23:57:33Z jim $
-"""
-
+"""Create a system deployment for an application."""
 import errno
 import grp
 import logging
@@ -23,7 +19,7 @@ import os
 import pwd
 import shutil
 
-from six.moves import configparser as ConfigParser
+import configparser as ConfigParser
 
 import zc.buildout
 
@@ -272,7 +268,7 @@ class Configuration:
         try:
             with open(options['location'], 'r' + mode) as f:
                 original = f.read()
-        except IOError as e:
+        except OSError as e:
             if e.errno != errno.ENOENT:
                 raise
             original = None
@@ -299,7 +295,7 @@ class Crontab:
         options['location'] = os.path.join(
             buildout[deployment]['crontab-directory'],
             deployment_name + '-' + name)
-        options['entry'] = '%s\t%s\t%s\n' % (
+        options['entry'] = '{}\t{}\t{}\n'.format(
             options['times'], user, options['command'])
 
     def install(self):
@@ -319,7 +315,7 @@ class SharedConfig:
     def __init__(self, buildout, name, options):
         self.options = options
         deployment = options.get('deployment')
-        options['entry_name'] = '%s_%s' % (buildout[deployment]['name'], name)
+        options['entry_name'] = '{}_{}'.format(buildout[deployment]['name'], name)
         if not os.path.exists(options['path']):
             raise zc.buildout.UserError(
                 "Path '%s' does not exist" % options['path'])
@@ -331,7 +327,7 @@ class SharedConfig:
             if 'text' in options:
                 raise zc.buildout.UserError(
                     "Cannot specify both file and text options")
-            text = open(options['file'], 'r').read()
+            text = open(options['file']).read()
         else:
             text = options['text']
         config_file = open(options['location'], 'r+')
@@ -345,7 +341,7 @@ class SharedConfig:
         return ()
 
     def _wrap_with_comments(self, entry_name, text):
-        return '\n%s\n%s\n%s\n' % (
+        return '\n{}\n{}\n{}\n'.format(
             begin_marker % entry_name, text, end_marker % entry_name)
 
     def update(self):
@@ -353,7 +349,7 @@ class SharedConfig:
 
 
 def uninstall_shared_config(name, options):
-    old_config = open(options['location'], 'r').readlines()
+    old_config = open(options['location']).readlines()
     new_config = []
     block_start = False
     for line in old_config:

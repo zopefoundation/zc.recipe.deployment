@@ -29,11 +29,11 @@ setup(
     name=name,
     version='2.0.dev0',
     author='Jim Fulton',
-    author_email='jim@zope.com',
+    author_email='dev-zope@zope.dev',
     description='ZC Buildout recipe for Unix deployments',
     license='ZPL 2.1',
     keywords='deployment build',
-    url='http://www.python.org/pypi/' + name,
+    url='https://github.com/zopefoundation/' + name,
     long_description=(
         read('README.rst')
         + '\n' +
@@ -61,7 +61,8 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "License :: OSI Approved :: Zope Public License",
     ],
-    install_requires=['setuptools', 'six'],
+    install_requires=['setuptools'],
+    python_requires='>=3.7',
     extras_require={
         'test': [
             'zc.buildout',
