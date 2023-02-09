@@ -24,7 +24,7 @@ def read(*rnames):
 
 setup(
     name=name,
-    version='1.4.0.dev0',
+    version='2.0.dev0',
     author='Jim Fulton',
     author_email='jim@zope.com',
     description='ZC Buildout recipe for Unix deployments',
