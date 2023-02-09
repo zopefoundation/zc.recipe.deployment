@@ -12,7 +12,6 @@
 #
 ##############################################################################
 
-from zope.testing import renormalizing
 import doctest
 import getpass
 import grp
@@ -21,7 +20,9 @@ import pwd
 import re
 import stat
 import unittest
+
 import zc.buildout.testing
+from zope.testing import renormalizing
 
 
 user = pwd.getpwuid(os.geteuid()).pw_name

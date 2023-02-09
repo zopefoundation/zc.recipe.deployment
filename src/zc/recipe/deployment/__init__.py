@@ -16,13 +16,15 @@
 $Id: deployment.py 14934 2006-11-10 23:57:33Z jim $
 """
 
-from six.moves import configparser as ConfigParser
 import errno
 import grp
 import logging
 import os
 import pwd
 import shutil
+
+from six.moves import configparser as ConfigParser
+
 import zc.buildout
 
 
