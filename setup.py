@@ -1,5 +1,8 @@
 import os
-from setuptools import setup, find_packages
+
+from setuptools import find_packages
+from setuptools import setup
+
 
 name = 'zc.recipe.deployment'
 
@@ -24,13 +27,13 @@ def read(*rnames):
 
 setup(
     name=name,
-    version='1.4.0.dev0',
+    version='2.0.dev0',
     author='Jim Fulton',
-    author_email='jim@zope.com',
+    author_email='dev-zope@zope.dev',
     description='ZC Buildout recipe for Unix deployments',
     license='ZPL 2.1',
     keywords='deployment build',
-    url='http://www.python.org/pypi/' + name,
+    url='https://github.com/zopefoundation/' + name,
     long_description=(
         read('README.rst')
         + '\n' +
@@ -48,19 +51,18 @@ setup(
         "Development Status :: 3 - Alpha",
         "Framework :: Buildout",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "License :: OSI Approved :: Zope Public License",
     ],
-    install_requires=['setuptools', 'six'],
+    install_requires=['setuptools'],
+    python_requires='>=3.7',
     extras_require={
         'test': [
             'zc.buildout',
