@@ -48,7 +48,7 @@ def ls(path):
         permissions = ['-']
     permissions = ''.join(permissions + [
         perm(power, st.st_mode) for power in reversed(range(9))])
-    return '{} {} {} {}'.format(permissions, user, group, path)
+    return f'{permissions} {user} {group} {path}'
 
 
 def setUp(test):
@@ -84,7 +84,7 @@ def test_suite():
 
                 (re.compile("user '%s'" % user), "user 'USER'"),
                 (re.compile("group '%s'" % group), "group 'GROUP'"),
-                (re.compile("{} {}".format(user, group)), "USER GROUP"),
+                (re.compile(f"{user} {group}"), "USER GROUP"),
                 (re.compile(user), "USER"),
 
                 # The order doesn't matter after this point
